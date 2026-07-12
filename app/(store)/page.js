@@ -38,45 +38,42 @@ export default async function HomePage() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative bg-surface py-xl overflow-hidden">
-        <div className="max-w-container-max mx-auto px-lg grid grid-cols-1 lg:grid-cols-2 gap-gutter items-center relative z-10">
-          <div className="relative z-20 max-w-2xl">
-            <span className="inline-flex items-center gap-2 text-secondary font-label-md text-label-md uppercase tracking-widest mb-md">
-              <span className="w-8 h-0.5 bg-secondary rounded-full"></span>
-              Pakistan's Trusted Book Shop
-            </span>
-            <h1 className="font-display-lg text-[3rem] sm:text-[4rem] lg:text-[4.5rem] font-bold text-primary leading-tight mb-md tracking-tight">
-              Discover Your<br/>Next Great Read
-            </h1>
-            <p className="font-body-lg text-body-lg text-on-surface-variant mb-lg max-w-xl">
-              From academic essentials and entry test guides to novels and Islamic literature — quality books delivered to your doorstep with Cash on Delivery.
-            </p>
-            <div className="flex flex-wrap gap-md">
-              <Link href="/shop" className="bg-primary text-on-primary px-lg py-4 font-label-md text-label-md btn-focus hover:bg-primary-container transition-soft flex items-center gap-base rounded shadow-lg">
-                Explore Collection
-                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-              </Link>
-              <Link href="/shop" className="border border-outline text-primary px-lg py-4 font-label-md text-label-md btn-focus hover:bg-surface-bright transition-soft rounded inline-flex items-center justify-center">
-                Browse Categories
-              </Link>
-            </div>
-          </div>
-          
-          <div className="relative z-20 lg:ml-auto w-full max-w-[460px] mx-auto lg:mx-0 mt-xl lg:mt-0 flex justify-center items-center">
-            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-secondary to-transparent blur-3xl"></div>
-            <div className="relative aspect-[4/5] w-full bg-white paper-shadow border border-outline-variant overflow-hidden transform lg:rotate-2 hover:rotate-0 transition-transform duration-500 rounded">
-              <img
-                src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=80"
-                alt="Collection of premium books"
-                loading="eager"
-                className="w-full h-full object-cover"
-              />
+      <section className="relative overflow-hidden">
+        {/* Full-width hero image */}
+        <div className="relative w-full">
+          <img
+            src="/Heroimage.jpeg"
+            alt="AB Book Shop - Books that Inspire, Knowledge that Empowers"
+            className="w-full h-auto object-cover block"
+            loading="eager"
+          />
+          {/* Overlay CTA */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent flex items-center">
+            <div className="max-w-container-max mx-auto px-lg w-full">
+              <div className="max-w-xl">
+                <span className="inline-flex items-center gap-2 text-secondary font-label-md text-label-md uppercase tracking-widest mb-md">
+                  <span className="w-8 h-0.5 bg-secondary rounded-full"></span>
+                  Pakistan's Trusted Book Shop
+                </span>
+                <h1 className="font-display-lg text-[2.5rem] sm:text-[3.5rem] font-bold text-white leading-tight mb-md tracking-tight drop-shadow-lg">
+                  Discover Your<br/>Next Great Read
+                </h1>
+                <p className="font-body-lg text-body-lg text-white/85 mb-lg max-w-lg drop-shadow">
+                  From academic essentials and entry test guides to novels and Islamic literature — quality books delivered to your doorstep with Cash on Delivery.
+                </p>
+                <div className="flex flex-wrap gap-md">
+                  <Link href="/shop" className="bg-primary text-on-primary px-lg py-4 font-label-md text-label-md btn-focus hover:bg-primary-container transition-soft flex items-center gap-base rounded shadow-lg">
+                    Explore Collection
+                    <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                  </Link>
+                  <Link href="/shop" className="border border-white/70 text-white px-lg py-4 font-label-md text-label-md btn-focus hover:bg-white/10 transition-soft rounded inline-flex items-center justify-center backdrop-blur-sm">
+                    Browse Categories
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        
-        {/* Background decorative letters */}
-        <div className="absolute -top-20 right-0 text-[25rem] font-display-lg font-bold text-primary opacity-[0.03] select-none z-0 pointer-events-none leading-none tracking-tighter overflow-hidden whitespace-nowrap">AB</div>
       </section>
 
       {/* Curated Collections: Bento Grid */}
