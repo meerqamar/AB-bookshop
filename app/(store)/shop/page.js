@@ -3,7 +3,16 @@ import { createClient } from '@/lib/supabase/server';
 import ShopFilters from './ShopFilters';
 import ShopSort from './ShopSort';
 
-export const metadata = { title: 'Browse Collection' };
+export const metadata = {
+  title: 'Browse Books',
+  description: 'Browse our full collection of MDCAT, CSS, PPSC, Islamic, academic and kids books. Filter by category, sort by price, and order with Cash on Delivery across Pakistan.',
+  alternates: { canonical: '/shop' },
+  openGraph: {
+    title: 'Browse Books — AB Book Shop',
+    description: 'Explore Pakistan\'s widest selection of entry-test, academic and Islamic books online.',
+    url: 'https://ab-bookshop.vercel.app/shop',
+  },
+};
 
 export default async function ShopPage({ searchParams }) {
   const params = await searchParams;
@@ -70,11 +79,14 @@ export default async function ShopPage({ searchParams }) {
 
           {/* Book Grid */}
           {products && products.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-md lg:gap-gutter">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 items-start">
               {products.map(p => (
-                <ProductCard key={p.id} product={p} />
+                <div key={p.id} className="w-full max-w-[260px] mx-auto sm:mx-0">
+                  <ProductCard product={p} />
+                </div>
               ))}
             </div>
+
           ) : (
             <div className="flex flex-col items-center justify-center p-xl bg-surface-container-low border border-outline border-dashed rounded text-center my-xl">
               <span className="material-symbols-outlined text-[64px] text-on-surface-variant/50 mb-md">search_off</span>

@@ -10,7 +10,17 @@ export function CartProvider({ children }) {
   useEffect(() => {
     try {
       const saved = localStorage.getItem('ab_cart');
-      if (saved) setCart(JSON.parse(saved));
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Clean out any corrupted keys like "[object Object]" or NaN
+        const clean = {};
+        Object.entries(parsed).forEach(([k, v]) => {
+          if (k !== '[object Object]' && k !== 'NaN' && !isNaN(Number(k))) {
+            clean[k] = v;
+          }
+        });
+        setCart(clean);
+      }
     } catch {}
     setLoaded(true);
   }, []);
@@ -20,28 +30,33 @@ export function CartProvider({ children }) {
   }, [cart, loaded]);
 
   const addToCart = useCallback((productId, qty = 1) => {
+    const id = typeof productId === 'object' && productId !== null ? productId.id : productId;
+    if (!id || id === '[object Object]') return;
     setCart(prev => ({
       ...prev,
-      [productId]: (prev[productId] || 0) + qty
+      [id]: (prev[id] || 0) + qty
     }));
   }, []);
 
   const updateQuantity = useCallback((productId, qty) => {
+    const id = typeof productId === 'object' && productId !== null ? productId.id : productId;
     setCart(prev => {
       const next = { ...prev };
-      if (qty <= 0) delete next[productId];
-      else next[productId] = qty;
+      if (qty <= 0) delete next[id];
+      else next[id] = qty;
       return next;
     });
   }, []);
 
   const removeFromCart = useCallback((productId) => {
+    const id = typeof productId === 'object' && productId !== null ? productId.id : productId;
     setCart(prev => {
       const next = { ...prev };
-      delete next[productId];
+      delete next[id];
       return next;
     });
   }, []);
+
 
   const clearCart = useCallback(() => setCart({}), []);
 

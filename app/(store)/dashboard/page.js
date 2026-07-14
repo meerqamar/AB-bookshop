@@ -33,10 +33,20 @@ export default function DashboardPage({ searchParams }) {
       if (!u) { router.push('/login'); return; }
       setUser(u);
 
-      const { data: prof } = await supabase.from('profiles').select('*').eq('id', u.id).single();
+      let { data: prof } = await supabase.from('profiles').select('*').eq('id', u.id).single();
+      if (!prof) {
+        await supabase.from('profiles').upsert({
+          id: u.id,
+          name: u?.user_metadata?.name || u?.email?.split('@')[0] || 'Customer',
+          role: 'user'
+        }, { onConflict: 'id', ignoreDuplicates: true });
+        const { data: newProf } = await supabase.from('profiles').select('*').eq('id', u.id).single();
+        prof = newProf;
+      }
       setProfile(prof);
       setLoading(false);
     }
+
     init();
   }, [router]);
 

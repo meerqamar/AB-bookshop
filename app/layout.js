@@ -2,14 +2,54 @@ import './globals.css';
 import { CartProvider } from '@/components/CartProvider';
 import { ToastProvider } from '@/components/Toast';
 
-import StoreShell from '@/components/StoreShell';
 
 export const metadata = {
   title: {
-    default: 'AB Book Shop — Buy Books Online with Cash on Delivery',
-    template: '%s — AB Book Shop',
+    default: 'AB Book Shop — Buy Books Online with Cash on Delivery in Pakistan',
+    template: '%s | AB Book Shop',
   },
-  description: 'AB Book Shop — buy novels, academic, entry-test, Islamic and programming books online with Cash on Delivery across Pakistan.',
+  description: 'AB Book Shop offers the widest range of academic, entry-test (MDCAT, CSS, PPSC), Islamic, and kids books online with Cash on Delivery across Pakistan. Fast delivery, quality selection.',
+  keywords: ['buy books online Pakistan', 'MDCAT books', 'CSS books', 'PPSC books', 'Islamic books', 'kids books', 'academic books', 'entry test preparation', 'AB Book Shop', 'books with cash on delivery'],
+  authors: [{ name: 'AB Book Shop' }],
+  creator: 'AB Book Shop',
+  publisher: 'AB Book Shop',
+  metadataBase: new URL('https://ab-bookshop.vercel.app'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_PK',
+    url: 'https://ab-bookshop.vercel.app',
+    siteName: 'AB Book Shop',
+    title: 'AB Book Shop — Buy Books Online with Cash on Delivery in Pakistan',
+    description: 'Pakistan\'s trusted online bookshop. Wide range of MDCAT, CSS, PPSC, Islamic, and kids books. Cash on Delivery available.',
+    images: [
+      {
+        url: '/Heroimage.jpeg',
+        width: 1200,
+        height: 630,
+        alt: 'AB Book Shop — Books that Inspire, Knowledge that Empowers',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AB Book Shop — Buy Books Online Pakistan',
+    description: 'Pakistan\'s trusted online bookshop. MDCAT, CSS, PPSC, Islamic and kids books with Cash on Delivery.',
+    images: ['/Heroimage.jpeg'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default function RootLayout({ children }) {

@@ -7,8 +7,9 @@ export default function Footer() {
         <div className="md:col-span-1">
           <h2 className="font-headline-md text-headline-md text-primary mb-md">AB Book Shop</h2>
           <p className="font-body-md text-body-md text-on-surface-variant mb-md pr-4">
-            Curated for the inquisitive mind. A space for literature that lingers. Pakistan's trusted book shop.
+            Pakistan's trusted bookstore for novels, academic textbooks, Islamic literature, and recruitment guides. Fast Cash on Delivery nationwide.
           </p>
+
           <div className="flex gap-md">
             <a className="text-on-surface-variant hover:text-primary transition-colors" href="#" aria-label="Facebook"><span className="material-symbols-outlined">brand_awareness</span></a>
             <a className="text-on-surface-variant hover:text-primary transition-colors" href="#" aria-label="Instagram"><span className="material-symbols-outlined">groups</span></a>

@@ -12,12 +12,25 @@ export async function login(formData) {
     password: formData.get('password'),
   }
 
-  const { error } = await supabase.auth.signInWithPassword(data)
+  const { error, data: authData } = await supabase.auth.signInWithPassword(data)
 
   if (error) {
     return { error: error.message }
   }
 
+  // Check role before allowing login from admin portal
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', authData?.user?.id)
+    .single()
+
+  if (!profile || profile.role !== 'admin') {
+    await supabase.auth.signOut()
+    return { error: 'Access Denied: You do not have admin privileges.' }
+  }
+
   revalidatePath('/admin')
   redirect('/admin')
 }
+

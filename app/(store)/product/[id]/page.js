@@ -4,6 +4,36 @@ import AddToCartWrapper from './AddToCartWrapper';
 import { money } from '@/lib/utils';
 import Link from 'next/link';
 
+export async function generateMetadata({ params }) {
+  const resolvedParams = await params;
+  const supabase = await createClient();
+  const { data: product } = await supabase
+    .from('products')
+    .select('title, author, description, image, price')
+    .eq('id', resolvedParams.id)
+    .single();
+
+  if (!product) return { title: 'Book Not Found' };
+
+  return {
+    title: product.title,
+    description: product.description
+      ? product.description.slice(0, 160)
+      : `Buy "${product.title}" by ${product.author || 'AB Book Shop'} with Cash on Delivery in Pakistan.`,
+    openGraph: {
+      title: `${product.title} | AB Book Shop`,
+      description: `Buy "${product.title}" online with Cash on Delivery in Pakistan.`,
+      images: product.image ? [{ url: product.image, alt: product.title }] : [],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: product.title,
+      images: product.image ? [product.image] : [],
+    },
+  };
+}
+
 export default async function ProductPage({ params }) {
   const resolvedParams = await params;
   const id = resolvedParams.id;

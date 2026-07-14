@@ -1,6 +1,34 @@
 import Link from 'next/link';
-import ProductCard from '@/components/ProductCard';
 import { createClient } from '@/lib/supabase/server';
+import FeaturedCarousel from '@/components/FeaturedCarousel';
+
+export const metadata = {
+  title: 'Home',
+  description: 'AB Book Shop — Pakistan\'s trusted online bookshop. Buy MDCAT, CSS, PPSC, Islamic, and kids books with Cash on Delivery across Pakistan.',
+  alternates: { canonical: '/' },
+  openGraph: {
+    title: 'AB Book Shop — Buy Books Online with Cash on Delivery in Pakistan',
+    description: 'Shop from a wide range of academic, entry-test, Islamic and kids books. Fast delivery, Cash on Delivery available.',
+    url: 'https://ab-bookshop.vercel.app',
+    images: [{ url: '/Heroimage.jpeg', width: 1200, height: 630, alt: 'AB Book Shop' }],
+  },
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BookStore',
+  name: 'AB Book Shop',
+  description: 'Pakistan\'s trusted online bookshop offering academic, entry-test, Islamic, and kids books with Cash on Delivery.',
+  url: 'https://ab-bookshop.vercel.app',
+  logo: 'https://ab-bookshop.vercel.app/Heroimage.jpeg',
+  image: 'https://ab-bookshop.vercel.app/Heroimage.jpeg',
+  priceRange: '$$',
+  paymentAccepted: 'Cash on Delivery',
+  currenciesAccepted: 'PKR',
+  areaServed: 'Pakistan',
+  address: { '@type': 'PostalAddress', addressCountry: 'PK' },
+  sameAs: [],
+};
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -37,155 +65,116 @@ export default async function HomePage() {
 
   return (
     <main>
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        {/* Full-width hero image */}
-        <div className="relative w-full">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      {/* Hero Section - fits entirely in one viewport below the navbar */}
+      <section style={{ height: 'calc(100vh - 80px)', display: 'flex', flexDirection: 'column' }}>
+        {/* Hero image fills remaining space */}
+        <div style={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
           <img
             src="/Heroimage.jpeg"
             alt="AB Book Shop - Books that Inspire, Knowledge that Empowers"
-            className="w-full h-auto object-cover block"
+            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }}
             loading="eager"
           />
-          {/* Overlay CTA */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent flex items-center">
-            <div className="max-w-container-max mx-auto px-lg w-full">
-              <div className="max-w-xl">
-                <span className="inline-flex items-center gap-2 text-secondary font-label-md text-label-md uppercase tracking-widest mb-md">
-                  <span className="w-8 h-0.5 bg-secondary rounded-full"></span>
-                  Pakistan's Trusted Book Shop
-                </span>
-                <h1 className="font-display-lg text-[2.5rem] sm:text-[3.5rem] font-bold text-white leading-tight mb-md tracking-tight drop-shadow-lg">
-                  Discover Your<br/>Next Great Read
-                </h1>
-                <p className="font-body-lg text-body-lg text-white/85 mb-lg max-w-lg drop-shadow">
-                  From academic essentials and entry test guides to novels and Islamic literature — quality books delivered to your doorstep with Cash on Delivery.
-                </p>
-                <div className="flex flex-wrap gap-md">
-                  <Link href="/shop" className="bg-primary text-on-primary px-lg py-4 font-label-md text-label-md btn-focus hover:bg-primary-container transition-soft flex items-center gap-base rounded shadow-lg">
-                    Explore Collection
-                    <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                  </Link>
-                  <Link href="/shop" className="border border-white/70 text-white px-lg py-4 font-label-md text-label-md btn-focus hover:bg-white/10 transition-soft rounded inline-flex items-center justify-center backdrop-blur-sm">
-                    Browse Categories
-                  </Link>
-                </div>
-              </div>
+        </div>
+        {/* CTA strip always visible at bottom of hero */}
+        <div className="bg-primary py-5 px-lg flex-shrink-0">
+          <div className="max-w-container-max mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-white font-label-md text-label-md text-center sm:text-left">
+              Quality books delivered to your doorstep — Cash on Delivery available!
+            </p>
+            <div className="flex flex-wrap gap-md justify-center">
+              <Link href="/shop" className="bg-white text-primary px-lg py-3 font-label-md text-label-md hover:bg-primary-container hover:text-white transition-soft flex items-center gap-base rounded shadow-md whitespace-nowrap">
+                Explore Collection
+                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+              </Link>
+              <Link href="/shop" className="border border-white/70 text-white px-lg py-3 font-label-md text-label-md hover:bg-white/10 transition-soft rounded inline-flex items-center justify-center whitespace-nowrap">
+                Browse Categories
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Curated Collections: Bento Grid */}
+      {/* Shop by Category - Circular Icons */}
       {categories && categories.length > 0 && (
-        <section className="py-xl bg-surface">
+        <section className="py-10 bg-white border-b border-gray-100">
           <div className="max-w-container-max mx-auto px-lg">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-lg gap-4">
-              <div>
-                <h2 className="font-headline-md text-[2rem] md:text-headline-md text-primary mb-xs">Curated Collections</h2>
-                <p className="font-body-md text-body-md text-on-surface-variant">Expertly selected for the discerning reader.</p>
-              </div>
-              <Link className="font-label-md text-label-md text-primary flex items-center gap-xs hover:underline" href="/shop">
-                Explore all genres <span className="material-symbols-outlined text-[16px]">open_in_new</span>
+            <p className="text-xs text-on-surface-variant uppercase tracking-widest mb-1">Browse Curated Collections</p>
+            <h2 className="text-2xl font-bold text-on-surface mb-8">Shop by Category</h2>
+            <div className="flex gap-6 sm:gap-8 overflow-x-auto pb-4 items-start">
+              {categories.map(cat => (
+                <Link
+                  key={cat.id}
+                  href={`/shop?category=${cat.id}`}
+                  className="flex flex-col items-center gap-2.5 shrink-0 group"
+                >
+                  <div
+                    style={{ borderRadius: '50%', aspectRatio: '1/1' }}
+                    className="w-22 h-22 sm:w-26 sm:h-26 md:w-28 md:h-28 rounded-full overflow-hidden shrink-0 shadow-[0_6px_16px_rgba(0,0,0,0.12)] border-2 sm:border-[3px] border-white group-hover:border-primary group-hover:shadow-[0_12px_24px_rgba(6,95,70,0.25)] group-hover:scale-105 transition-all duration-300 bg-surface-container relative flex items-center justify-center"
+                  >
+                    {/* Spherical glass highlight for 3D sphere depth */}
+                    <div className="absolute inset-0 rounded-full shadow-[inset_0_4px_8px_rgba(255,255,255,0.6),inset_0_-4px_8px_rgba(0,0,0,0.15)] pointer-events-none z-10"></div>
+                    {cat.logo ? (
+                      <img src={cat.logo} alt={cat.name} style={{ borderRadius: '50%' }} className="w-full h-full object-cover block rounded-full" />
+                    ) : (
+                      <div style={{ borderRadius: '50%' }} className="w-full h-full bg-[#e8f5e9] flex items-center justify-center rounded-full">
+                        <span className="material-symbols-outlined text-primary text-[34px] sm:text-[42px]">menu_book</span>
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-[11px] sm:text-xs text-center uppercase tracking-wider font-bold text-on-surface group-hover:text-primary transition-colors max-w-[95px] sm:max-w-[115px] leading-snug">
+                    {cat.name}
+                  </span>
+                </Link>
+              ))}
+              {/* Discover all circle */}
+              <Link href="/shop" className="flex flex-col items-center gap-2.5 shrink-0 group">
+                <div
+                  style={{ borderRadius: '50%', aspectRatio: '1/1' }}
+                  className="w-22 h-22 sm:w-26 sm:h-26 md:w-28 md:h-28 rounded-full border-2 sm:border-[3px] border-gray-200 flex items-center justify-center shrink-0 group-hover:border-primary group-hover:shadow-[0_12px_24px_rgba(6,95,70,0.2)] group-hover:scale-105 transition-all duration-300 bg-white relative overflow-hidden"
+                >
+                  <div className="absolute inset-0 rounded-full shadow-[inset_0_4px_8px_rgba(255,255,255,0.8),inset_0_-4px_8px_rgba(0,0,0,0.08)] pointer-events-none z-10"></div>
+                  <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors text-[26px] sm:text-[34px] z-20">arrow_outward</span>
+                </div>
+                <span className="text-[11px] sm:text-xs text-center uppercase tracking-wider font-bold text-on-surface-variant group-hover:text-primary transition-colors max-w-[95px] sm:max-w-[115px] leading-snug">
+                  Discover all new items
+                </span>
               </Link>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-gutter h-auto md:h-[600px]">
-              
-              {/* Card 1 */}
-              {categories[0] && (
-                <Link href={`/shop?category=${categories[0].id}`} className="md:col-span-2 md:row-span-2 bg-surface-container-high relative overflow-hidden group cursor-pointer border border-outline-variant rounded">
-                  <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" style={{ backgroundImage: `url('${categories[0].image || 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=800'}')` }}></div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent"></div>
-                  <div className="absolute bottom-0 left-0 p-lg w-full">
-                    <span className="font-label-md text-label-md text-secondary-fixed bg-primary px-sm py-1 mb-base inline-block rounded">Essential Reads</span>
-                    <h3 className="font-headline-sm text-[1.5rem] md:text-headline-sm text-white mb-base">{categories[0].name}</h3>
-                  </div>
-                </Link>
-              )}
 
-              {/* Card 2 */}
-              {categories[1] && (
-                <Link href={`/shop?category=${categories[1].id}`} className="md:col-span-2 bg-surface-container relative overflow-hidden group cursor-pointer border border-outline-variant rounded h-48 md:h-auto">
-                  <div className="absolute inset-0 bg-cover bg-center opacity-40 grayscale group-hover:grayscale-0 transition-all duration-500" style={{ backgroundImage: `url('${categories[1].image || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=800'}')` }}></div>
-                  <div className="relative p-lg h-full flex flex-col justify-end">
-                    <h3 className="font-headline-sm text-[1.5rem] md:text-headline-sm text-primary mb-xs">{categories[1].name}</h3>
-                  </div>
-                </Link>
-              )}
 
-              {/* Card 3 */}
-              {categories[2] && (
-                <Link href={`/shop?category=${categories[2].id}`} className="bg-surface-container-low relative overflow-hidden group cursor-pointer border border-outline-variant rounded h-48 md:h-auto">
-                  <div className="p-lg h-full flex flex-col justify-between">
-                    <span className="material-symbols-outlined text-primary text-[32px]">science</span>
-                    <div>
-                      <h3 className="font-headline-sm text-[1.25rem] md:text-headline-sm text-primary mb-xs">{categories[2].name}</h3>
-                    </div>
-                  </div>
-                </Link>
-              )}
-
-              {/* Card 4 */}
-              {categories[3] && (
-                <Link href={`/shop?category=${categories[3].id}`} className="bg-primary relative overflow-hidden group cursor-pointer border border-outline-variant rounded h-48 md:h-auto">
-                  <div className="p-lg h-full flex flex-col justify-between">
-                    <span className="material-symbols-outlined text-secondary-container text-[32px]">public</span>
-                    <div>
-                      <h3 className="font-headline-sm text-[1.25rem] md:text-headline-sm text-white mb-xs">{categories[3].name}</h3>
-                    </div>
-                  </div>
-                </Link>
-              )}
-
-            </div>
           </div>
         </section>
       )}
 
-      {/* Featured Products Grid (Replaced Author Spotlight with Featured Products since we don't have authors) */}
+      {/* Featured Books - Scrollable Carousel */}
       {products && products.length > 0 && (
-        <section className="py-xl bg-surface-container">
-          <div className="max-w-container-max mx-auto px-lg">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-lg gap-4">
-              <div>
-                <span className="font-label-md text-label-md text-secondary mb-base block">Featured</span>
-                <h2 className="font-headline-md text-[2rem] md:text-headline-md text-primary">Discover Our Books</h2>
-              </div>
-              <Link className="font-label-md text-label-md text-primary flex items-center gap-xs hover:underline" href="/shop">
-                View All Collection <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-              </Link>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md lg:gap-gutter">
-              {products.map(p => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
-          </div>
-        </section>
+        <FeaturedCarousel products={products} />
       )}
 
       {/* Newsletter Signup */}
       <section className="py-xl bg-surface">
         <div className="max-w-container-max mx-auto px-lg text-center">
           <div className="max-w-2xl mx-auto">
-            <span className="material-symbols-outlined text-primary text-[48px] mb-md" data-weight="fill">mail</span>
-            <h2 className="font-display-lg text-[2rem] md:text-display-lg text-primary mb-base">The Weekly Digest</h2>
+            <span className="material-symbols-outlined text-primary text-[48px] mb-md" data-weight="fill">local_offer</span>
+            <h2 className="font-display-lg text-[2rem] md:text-display-lg text-primary mb-base">Get Exclusive Book Deals & Alerts</h2>
             <p className="font-body-lg text-body-lg text-on-surface-variant mb-lg">
-              Thoughtful recommendations, new arrivals, and literary news delivered every Sunday morning. No noise, just substance.
+              Subscribe to receive instant alerts on discounts, recruitment guides, bestselling novels, and new book restocks right in your inbox.
             </p>
             <form className="flex flex-col sm:flex-row gap-xs justify-center items-stretch sm:items-center bg-white p-2 border border-outline rounded">
-              <input className="bg-surface-container-low border-none focus:ring-0 px-md py-3 text-body-md w-full sm:w-auto flex-grow outline-none rounded" placeholder="Your email address" required type="email" />
-              <button className="bg-primary text-on-primary px-lg py-3 font-label-md text-label-md btn-focus hover:bg-primary-container transition-soft whitespace-nowrap rounded" type="submit">
-                Subscribe
+              <input className="bg-surface-container-low border-none focus:ring-0 px-md py-3 text-body-md w-full sm:w-auto flex-grow outline-none rounded" placeholder="Enter your email address..." required type="email" />
+              <button className="bg-primary text-on-primary px-lg py-3 font-label-md text-label-md btn-focus hover:bg-primary-container transition-soft whitespace-nowrap rounded font-bold cursor-pointer" type="submit">
+                Get 10% Off
               </button>
             </form>
             <p className="font-caption text-caption text-on-surface-variant mt-md">
-              Join 12,000+ readers. Respectful of your inbox and privacy.
+              Join thousands of happy book buyers across Pakistan. Use code <strong className="text-primary font-bold">WELCOME10</strong> for 10% off your first purchase!
             </p>
           </div>
         </div>
       </section>
+
     </main>
   );
 }

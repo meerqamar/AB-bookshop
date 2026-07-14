@@ -20,6 +20,34 @@
     transform: translateY(-2px);
     box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.08);
   }
+
+  /* Navbar link with animated underline */
+  .nav-link {
+    position: relative;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1a1a1a;
+    text-decoration: none;
+    padding-bottom: 4px;
+    transition: color 0.2s ease;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background-color: #065f46; /* emerald primary */
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+  .nav-link:hover {
+    color: #065f46;
+  }
+  .nav-link:hover::after {
+    width: 100%;
+  }
 }
 
 html {
