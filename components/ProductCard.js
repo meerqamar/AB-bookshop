@@ -31,10 +31,12 @@ export default function ProductCard({ product }) {
         {image ? (
           <img src={image} alt={title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-on-surface-variant/50">
-            <span className="material-symbols-outlined text-[36px] sm:text-[48px]">menu_book</span>
+          <div className="w-full h-full bg-gradient-to-br from-[#065f46] via-[#047857] to-[#064e3b] flex flex-col items-center justify-center p-3 text-center text-white shadow-inner">
+            <span className="material-symbols-outlined text-[40px] sm:text-[52px] mb-2 text-white/90">auto_stories</span>
+            <span className="text-xs sm:text-sm font-bold leading-tight line-clamp-3 text-white/95">{title || categoryName || 'AB Book Shop'}</span>
           </div>
         )}
+
         <button
           className={`absolute bottom-2 right-2 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded shadow-lg opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0 duration-300 btn-focus ${added ? 'bg-green-500 text-white scale-110' : 'bg-primary text-on-primary'}`}
           onClick={handleAddToCart}
@@ -46,16 +48,22 @@ export default function ProductCard({ product }) {
       </div>
       <div className="space-y-1 flex flex-col flex-grow">
         {categoryName && <span className="text-[10px] sm:text-xs font-semibold text-primary tracking-wider uppercase">{categoryName}</span>}
-        <h3 className="text-sm sm:text-base font-bold group-hover:text-primary transition-colors line-clamp-2 leading-snug">{title}</h3>
+        <h3 className="text-sm sm:text-base font-bold group-hover:text-primary transition-colors line-clamp-2 leading-snug">{title || categoryName || 'Featured Book'}</h3>
         {author && <p className="text-xs text-on-surface-variant italic mb-auto line-clamp-1">{author}</p>}
-        <div className="flex items-center gap-1.5 pt-1 mt-auto">
-          <span className="font-bold text-sm sm:text-base text-on-surface">{money(price)}</span>
+        
+        {/* Price and Discount Section exactly as marked up */}
+        <div className="flex flex-col pt-1 mt-auto">
+          <span className="font-bold text-base sm:text-lg text-[#2563eb] leading-tight">{money(price)}</span>
           {original_price && original_price > price && (
-            <span className="text-xs font-medium text-on-surface-variant line-through">{money(original_price)}</span>
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className="text-xs font-medium text-on-surface-variant line-through">{money(original_price)}</span>
+              <span className="bg-error/10 text-error text-[11px] font-bold px-1.5 py-0.5 rounded leading-none">-{discount}%</span>
+            </div>
           )}
         </div>
       </div>
     </Link>
+
 
   );
 }
