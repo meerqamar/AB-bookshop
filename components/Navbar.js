@@ -127,7 +127,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className={`w-full sticky top-0 bg-surface border-b border-outline-variant z-50 transition-shadow duration-300 ${scrolled ? 'paper-shadow' : ''}`}>
+      <header className={`w-full sticky top-0 bg-white/95 backdrop-blur-md border-b border-outline-variant/70 z-50 transition-shadow duration-300 ${scrolled ? 'shadow-[0_4px_20px_rgba(4,120,87,0.08)]' : ''}`}>
         <nav className="flex justify-between items-center h-16 sm:h-20 px-4 md:px-lg max-w-container-max mx-auto w-full gap-2">
           <div className="flex items-center min-w-0">
             <Link href="/" className="font-display-lg text-xl sm:text-2xl md:text-[2.5rem] font-bold text-primary tracking-tight truncate">AB Book Shop</Link>

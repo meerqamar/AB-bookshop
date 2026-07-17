@@ -42,40 +42,30 @@ export default function SignupPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex' }}>
-      {/* Left panel — branding */}
-      <div
-        className="hidden lg:flex flex-col justify-between p-12 text-white"
-        style={{
-          width: '45%',
-          background: 'linear-gradient(145deg, #064e3b 0%, #065f46 50%, #047857 100%)',
-          flexShrink: 0,
-        }}
-      >
-        <Link href="/" className="text-2xl font-bold tracking-tight">AB Book Shop</Link>
+    <div className="min-h-[calc(100vh-5rem)] flex">
+      <div className="hidden lg:flex flex-col justify-between p-12 text-white w-[45%] shrink-0 bg-gradient-to-br from-[#064e3b] via-[#065f46] to-[#047857]">
+        <Link href="/" className="font-display-lg text-2xl font-bold tracking-tight">AB Book Shop</Link>
         <div>
-          <p className="text-5xl font-bold leading-tight mb-4">
+          <p className="font-display-lg text-5xl font-bold leading-tight mb-4">
             Start your<br />reading journey<br />today.
           </p>
-          <p className="text-white/70 text-lg">
-            Join thousands of readers. Get access to the best books with Cash on Delivery across Pakistan.
+          <p className="text-white/70 text-lg leading-relaxed">
+            Join thousands of readers. Quality books with Cash on Delivery across Pakistan.
           </p>
         </div>
-        <div className="flex gap-8 text-white/60 text-sm">
-          <span>📦 Fast Delivery</span>
-          <span>💳 Cash on Delivery</span>
-          <span>📚 1000+ Books</span>
+        <div className="flex flex-col gap-3 text-white/70 text-sm">
+          <span className="flex items-center gap-2"><span className="material-symbols-outlined text-[18px]">local_shipping</span> Fast delivery</span>
+          <span className="flex items-center gap-2"><span className="material-symbols-outlined text-[18px]">payments</span> Cash on Delivery</span>
+          <span className="flex items-center gap-2"><span className="material-symbols-outlined text-[18px]">menu_book</span> 1000+ books</span>
         </div>
       </div>
 
-      {/* Right panel — form */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12 bg-white">
-        <div style={{ width: '100%', maxWidth: '420px' }}>
-          {/* Mobile logo */}
-          <Link href="/" className="lg:hidden block text-xl font-bold text-primary mb-8">AB Book Shop</Link>
+      <div className="flex-1 flex items-center justify-center px-6 py-12 bg-[#f3f7f5]">
+        <div className="w-full max-w-[420px] bg-white border border-outline-variant/60 rounded-2xl p-6 sm:p-8 shadow-sm">
+          <Link href="/" className="lg:hidden block font-display-lg text-xl font-bold text-primary mb-6">AB Book Shop</Link>
 
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">Create account</h1>
-          <p className="text-gray-500 text-sm mb-8">Join AB Book Shop — it's free</p>
+          <h1 className="font-headline-md text-3xl text-on-surface mb-1">Create account</h1>
+          <p className="text-on-surface-variant text-sm mb-8">Join AB Book Shop — it&apos;s free</p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {/* Name */}
@@ -127,9 +117,9 @@ export default function SignupPage() {
               </div>
               {password && (
                 <div className="flex items-center gap-1.5 mt-2">
-                  <div className={`h-1 flex-1 rounded-full transition-colors ${password.length >= 6 ? 'bg-green-500' : 'bg-red-300'}`} />
-                  <div className={`h-1 flex-1 rounded-full transition-colors ${password.length >= 8 ? 'bg-green-500' : 'bg-gray-200'}`} />
-                  <div className={`h-1 flex-1 rounded-full transition-colors ${password.length >= 10 ? 'bg-green-500' : 'bg-gray-200'}`} />
+                  <div className={`h-1 flex-1 rounded-full transition-colors ${password.length >= 6 ? 'bg-primary' : 'bg-error/40'}`} />
+                  <div className={`h-1 flex-1 rounded-full transition-colors ${password.length >= 8 ? 'bg-primary' : 'bg-outline-variant'}`} />
+                  <div className={`h-1 flex-1 rounded-full transition-colors ${password.length >= 10 ? 'bg-primary' : 'bg-outline-variant'}`} />
                   <span className="text-xs text-gray-400 ml-1">{password.length < 6 ? 'Weak' : password.length < 8 ? 'Fair' : 'Strong'}</span>
                 </div>
               )}

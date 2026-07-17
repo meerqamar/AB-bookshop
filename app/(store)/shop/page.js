@@ -22,78 +22,83 @@ export default async function ShopPage({ searchParams }) {
 
   const supabase = await createClient();
 
-  // Fetch categories for filter
   const { data: categories } = await supabase
     .from('categories')
     .select('*')
     .order('name');
 
-  // Build product query
   let query = supabase
     .from('products')
     .select('*, category:categories(name)');
 
-  if (q) {
-    query = query.ilike('title', `%${q}%`);
-  }
-  if (categoryId > 0) {
-    query = query.eq('category_id', categoryId);
-  }
+  if (q) query = query.ilike('title', `%${q}%`);
+  if (categoryId > 0) query = query.eq('category_id', categoryId);
 
-  if (sort === 'price_asc') {
-    query = query.order('price', { ascending: true });
-  } else if (sort === 'price_desc') {
-    query = query.order('price', { ascending: false });
-  } else {
-    // newest
-    query = query.order('created_at', { ascending: false });
-  }
+  if (sort === 'price_asc') query = query.order('price', { ascending: true });
+  else if (sort === 'price_desc') query = query.order('price', { ascending: false });
+  else query = query.order('created_at', { ascending: false });
 
   const { data: products } = await query;
 
   const selectedCategory = categories?.find(c => c.id === categoryId);
-  const pageTitle = selectedCategory ? selectedCategory.name : (q ? `Search Results for "${q}"` : 'Browse Our Collection');
-  const pageDescription = selectedCategory ? `Explore our collection of ${selectedCategory.name} books.` : 'Curating the timeless wisdom of the ages. Discover books that challenge the mind.';
+  const pageTitle = selectedCategory ? selectedCategory.name : (q ? `Results for “${q}”` : 'Browse Our Collection');
+  const pageDescription = selectedCategory
+    ? `Explore our collection of ${selectedCategory.name} books.`
+    : 'Academic, entry-test, Islamic, and leisure reads — delivered with Cash on Delivery.';
 
   return (
-    <main className="max-w-container-max mx-auto px-4 md:px-lg py-md md:py-xl min-h-screen">
-      <div className="flex flex-col md:flex-row gap-gutter">
-        {/* Sidebar Filters */}
-        <aside className="w-full md:w-64 flex-shrink-0">
-          <ShopFilters categories={categories || []} currentQ={q} currentCategory={categoryId} />
-        </aside>
-
-        {/* Main Content */}
-        <div className="flex-1 space-y-md">
-          {/* Sorting and Header */}
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-md mb-lg">
+    <main className="min-h-screen bg-[#f3f7f5]">
+      <div className="max-w-container-max mx-auto px-4 md:px-lg py-8 md:py-12">
+        <div className="mb-8 md:mb-10">
+          <p className="text-[11px] sm:text-xs text-primary/80 uppercase tracking-[0.2em] font-semibold mb-2">
+            Catalog
+          </p>
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <div>
-              <h1 className="font-display-lg text-[2rem] md:text-display-lg text-primary leading-tight">{pageTitle}</h1>
-              <p className="font-body-md text-body-md text-on-surface-variant max-w-xl mt-xs">{pageDescription}</p>
+              <h1 className="font-display-lg text-[1.75rem] sm:text-[2rem] md:text-display-lg text-primary leading-tight">
+                {pageTitle}
+              </h1>
+              <p className="font-body-md text-body-md text-on-surface-variant max-w-xl mt-2">
+                {pageDescription}
+              </p>
             </div>
-            <div className="flex items-center gap-sm">
-              <span className="text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Sort by:</span>
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-sm text-on-surface-variant hidden sm:inline">Sort by</span>
               <ShopSort />
             </div>
           </div>
+        </div>
 
-          {/* Book Grid */}
-          {products && products.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 items-start">
-              {products.map(p => (
-                <div key={p.id} className="w-full max-w-[260px] mx-auto sm:mx-0">
-                  <ProductCard product={p} />
+        <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
+          <aside className="w-full md:w-64 shrink-0">
+            <ShopFilters categories={categories || []} currentQ={q} currentCategory={categoryId} />
+          </aside>
+
+          <div className="flex-1 w-full">
+            {products && products.length > 0 ? (
+              <>
+                <p className="text-sm text-on-surface-variant mb-4">
+                  {products.length} book{products.length === 1 ? '' : 's'}
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+                  {products.map(p => (
+                    <div key={p.id} className="w-full">
+                      <ProductCard product={p} />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-
-          ) : (
-            <div className="flex flex-col items-center justify-center p-xl bg-surface-container-low border border-outline border-dashed rounded text-center my-xl">
-              <span className="material-symbols-outlined text-[64px] text-on-surface-variant/50 mb-md">search_off</span>
-              <h3 className="font-headline-md text-headline-md text-primary mb-xs">No books found</h3>
-              <p className="font-body-md text-body-md text-on-surface-variant">Try adjusting your search or filter criteria.</p>
-            </div>
-          )}
+              </>
+            ) : (
+              <div className="flex flex-col items-center justify-center p-12 md:p-16 bg-white border border-dashed border-outline-variant rounded-2xl text-center">
+                <span className="material-symbols-outlined text-[56px] text-primary/40 mb-4">search_off</span>
+                <h3 className="font-headline-md text-xl text-on-surface mb-2">No books found</h3>
+                <p className="text-on-surface-variant mb-6">Try adjusting your search or filters.</p>
+                <a href="/shop" className="bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors">
+                  Clear filters
+                </a>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </main>

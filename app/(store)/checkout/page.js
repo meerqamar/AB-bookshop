@@ -250,7 +250,7 @@ export default function CheckoutPage() {
             <div className="flex justify-between items-center mb-3">
               <h2 className="text-lg font-bold text-gray-900">Contact</h2>
               {!user ? (
-                <Link href="/login?redirect=/checkout" className="text-sm font-semibold text-blue-600 hover:underline">
+                <Link href="/login?redirect=/checkout" className="text-sm font-semibold text-primary hover:underline">
                   Sign in
                 </Link>
               ) : (
@@ -265,7 +265,7 @@ export default function CheckoutPage() {
                 placeholder="Email or mobile phone number"
                 value={emailOrPhone}
                 onChange={(e) => setEmailOrPhone(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
               />
               <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined text-[18px] pointer-events-none">
                 help
@@ -312,7 +312,7 @@ export default function CheckoutPage() {
                       setPhone('');
                     }
                   }}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-gray-50 cursor-pointer"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-gray-50 cursor-pointer"
                 >
                   {addresses.map(a => (
                     <option key={a.id} value={a.id}>
@@ -342,14 +342,14 @@ export default function CheckoutPage() {
                   placeholder="First name"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
                 />
                 <input
                   type="text"
                   placeholder="Last name"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
                 />
               </div>
 
@@ -360,7 +360,7 @@ export default function CheckoutPage() {
                 placeholder="Address (House No, Street, Sector / Area)"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
               />
 
               {/* City + Postal */}
@@ -371,14 +371,14 @@ export default function CheckoutPage() {
                   placeholder="City"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
                 />
                 <input
                   type="text"
                   placeholder="Postal code (optional)"
                   value={postalCode}
                   onChange={(e) => setPostalCode(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
                 />
               </div>
 
@@ -390,7 +390,7 @@ export default function CheckoutPage() {
                   placeholder="Phone"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
                 />
                 <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined text-[18px] pointer-events-none">
                   help
@@ -415,9 +415,9 @@ export default function CheckoutPage() {
           {/* Shipping Method Section */}
           <section>
             <h2 className="text-lg font-bold text-gray-900 mb-3">Shipping method</h2>
-            <div className="border border-blue-500 bg-blue-50/20 rounded-lg p-4 flex justify-between items-center text-sm font-medium">
+            <div className="border border-primary bg-primary/5 rounded-lg p-4 flex justify-between items-center text-sm font-medium">
               <div className="flex items-center gap-3">
-                <span className="w-4 h-4 rounded-full border-4 border-blue-600 bg-white flex-shrink-0"></span>
+                <span className="w-4 h-4 rounded-full border-4 border-primary bg-white flex-shrink-0"></span>
                 <span className="text-gray-900 font-semibold">Standard Delivery Charges</span>
               </div>
               <span className="font-bold text-gray-900">{money(codFee())}</span>
@@ -429,10 +429,10 @@ export default function CheckoutPage() {
             <h2 className="text-lg font-bold text-gray-900 mb-1">Payment</h2>
             <p className="text-xs text-gray-500 mb-3">All transactions are secure and encrypted.</p>
 
-            <div className="border border-blue-500 rounded-lg overflow-hidden">
+            <div className="border border-primary rounded-lg overflow-hidden">
               {/* Radio Header */}
-              <div className="bg-blue-50/30 p-4 flex items-center gap-3 border-b border-gray-200">
-                <span className="w-4 h-4 rounded-full border-4 border-blue-600 bg-white flex-shrink-0"></span>
+              <div className="bg-primary/5 p-4 flex items-center gap-3 border-b border-gray-200">
+                <span className="w-4 h-4 rounded-full border-4 border-primary bg-white flex-shrink-0"></span>
                 <span className="text-sm font-bold text-gray-900">Cash on Delivery (COD)</span>
               </div>
               {/* Box Content */}
@@ -452,7 +452,7 @@ export default function CheckoutPage() {
                   name="billing"
                   checked={billingSame}
                   onChange={() => setBillingSame(true)}
-                  className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500 cursor-pointer"
+                  className="w-4 h-4 text-primary border-gray-300 focus:ring-primary cursor-pointer"
                 />
                 <span className="font-medium text-gray-800">Same as shipping address</span>
               </label>
@@ -464,7 +464,7 @@ export default function CheckoutPage() {
                     name="billing"
                     checked={!billingSame}
                     onChange={() => setBillingSame(false)}
-                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500 cursor-pointer"
+                    className="w-4 h-4 text-primary border-gray-300 focus:ring-primary cursor-pointer"
                   />
                   <span className="font-medium text-gray-800">Use a different billing address</span>
                 </label>
@@ -556,7 +556,7 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={placing}
-              className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-base rounded-lg shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-4 bg-primary hover:bg-primary/90 text-white font-bold text-base rounded-xl shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
             >
               {placing ? (
                 <>
@@ -574,7 +574,7 @@ export default function CheckoutPage() {
       {/* RIGHT PANE: Emerald Green Order Summary (exact match to screenshot) */}
       <div
         className="w-full lg:w-2/5 px-4 sm:px-12 lg:px-14 py-8 sm:py-10 text-white order-1 lg:order-2"
-        style={{ background: '#3A6B48' }}
+        style={{ background: '#047857' }}
       >
         <div className="max-w-md mx-auto lg:max-w-none sticky top-10">
           {/* Product Items List */}

@@ -21,6 +21,30 @@
     box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.08);
   }
 
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.7s ease-out both;
+  }
+  .animate-rise {
+    animation: riseIn 0.6s ease-out both;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes riseIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   /* Navbar link with animated underline */
   .nav-link {
     position: relative;

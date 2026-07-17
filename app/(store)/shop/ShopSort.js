@@ -7,15 +7,14 @@ export default function ShopSort() {
   const currentSort = searchParams.get('sort') || 'newest';
 
   function handleSortChange(e) {
-    const newSort = e.target.value;
     const params = new URLSearchParams(searchParams.toString());
-    params.set('sort', newSort);
+    params.set('sort', e.target.value);
     router.push(`/shop?${params.toString()}`);
   }
 
   return (
-    <select 
-      className="bg-surface border border-outline-variant rounded px-md py-sm font-body-md focus:border-primary focus:ring-0 outline-none cursor-pointer text-on-surface"
+    <select
+      className="bg-white border border-outline-variant rounded-xl px-4 py-2.5 text-sm font-medium focus:border-primary focus:ring-2 focus:ring-primary/15 outline-none cursor-pointer text-on-surface shadow-sm"
       value={currentSort}
       onChange={handleSortChange}
     >
