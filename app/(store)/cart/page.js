@@ -68,8 +68,8 @@ export default function CartPage() {
 
   if (cartCount === 0) {
     return (
-      <div className="max-w-container-max mx-auto px-gutter py-xl">
-        <div className="flex flex-col items-center justify-center p-xl bg-surface-container-low border border-outline border-dashed rounded-2xl text-center my-xl">
+      <div className="max-w-container-max mx-auto px-4 md:px-gutter py-12 md:py-xl">
+        <div className="flex flex-col items-center justify-center p-8 md:p-xl bg-surface-container-low border border-outline border-dashed rounded-2xl text-center my-8 md:my-xl">
           <span className="material-symbols-outlined text-[64px] text-on-surface-variant/50 mb-md">shopping_cart</span>
           <h3 className="font-headline-md text-2xl font-bold text-primary mb-2">Your cart is empty</h3>
           <p className="font-body-md text-on-surface-variant mb-6">Find your next great read in the shop.</p>

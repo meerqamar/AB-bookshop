@@ -36,7 +36,11 @@ export default function LoginPage() {
       }
     } else {
       addToast('Welcome back! 👋', 'success');
-      router.push('/dashboard');
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data: profile } = user
+        ? await supabase.from('profiles').select('role').eq('id', user.id).single()
+        : { data: null };
+      router.push(profile?.role === 'admin' ? '/admin' : '/dashboard');
       router.refresh();
     }
   }

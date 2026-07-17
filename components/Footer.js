@@ -3,10 +3,10 @@ import Link from 'next/link';
 export default function Footer() {
   return (
     <footer className="bg-surface-container-low border-t border-outline-variant">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-gutter py-xl px-lg max-w-container-max mx-auto w-full">
-        <div className="md:col-span-1">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-gutter py-10 md:py-xl px-4 md:px-lg max-w-container-max mx-auto w-full">
+        <div className="md:col-span-1 sm:col-span-2">
           <h2 className="font-headline-md text-headline-md text-primary mb-md">AB Book Shop</h2>
-          <p className="font-body-md text-body-md text-on-surface-variant mb-md pr-4">
+          <p className="font-body-md text-body-md text-on-surface-variant mb-md pr-0 sm:pr-4">
             Pakistan's trusted bookstore for novels, academic textbooks, Islamic literature, and recruitment guides. Fast Cash on Delivery nationwide.
           </p>
 
@@ -42,9 +42,9 @@ export default function Footer() {
           <p className="font-body-md text-body-md text-on-surface-variant">Sun: 11am – 5pm</p>
         </div>
       </div>
-      <div className="max-w-container-max mx-auto px-lg py-md border-t border-outline-variant flex flex-col md:flex-row justify-between items-center gap-md text-on-surface-variant">
-        <p className="font-caption text-caption">© {new Date().getFullYear()} AB Book Shop. All rights reserved.</p>
-        <div className="flex gap-lg font-caption text-caption">
+      <div className="max-w-container-max mx-auto px-4 md:px-lg py-md border-t border-outline-variant flex flex-col md:flex-row justify-between items-center gap-3 text-on-surface-variant">
+        <p className="font-caption text-caption text-center md:text-left">© {new Date().getFullYear()} AB Book Shop. All rights reserved.</p>
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 font-caption text-caption">
           <Link className="hover:text-primary" href="#">Terms of Service</Link>
           <Link className="hover:text-primary" href="#">Cookie Policy</Link>
           <Link className="hover:text-primary" href="#">Accessibility</Link>

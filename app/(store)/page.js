@@ -66,29 +66,27 @@ export default async function HomePage() {
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      {/* Hero Section - fits entirely in one viewport below the navbar */}
-      <section style={{ height: 'calc(100vh - 80px)', display: 'flex', flexDirection: 'column' }}>
-        {/* Hero image fills remaining space */}
-        <div style={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
+      {/* Hero: full banner on mobile (no side crop); viewport-fill cover on md+ */}
+      <section className="flex flex-col md:h-[calc(100dvh-5rem)] md:min-h-[480px] md:max-h-[900px]">
+        <div className="w-full bg-white md:flex-1 md:overflow-hidden md:min-h-0">
           <img
             src="/Heroimage.jpeg"
             alt="AB Book Shop - Books that Inspire, Knowledge that Empowers"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }}
+            className="w-full h-auto block md:h-full md:object-cover md:object-center"
             loading="eager"
           />
         </div>
-        {/* CTA strip always visible at bottom of hero */}
-        <div className="bg-primary py-5 px-lg flex-shrink-0">
-          <div className="max-w-container-max mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-white font-label-md text-label-md text-center sm:text-left">
+        <div className="bg-primary py-4 sm:py-5 px-4 md:px-lg flex-shrink-0">
+          <div className="max-w-container-max mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+            <p className="text-white font-label-md text-sm sm:text-label-md text-center sm:text-left">
               Quality books delivered to your doorstep — Cash on Delivery available!
             </p>
-            <div className="flex flex-wrap gap-md justify-center">
-              <Link href="/shop" className="bg-white text-primary px-lg py-3 font-label-md text-label-md hover:bg-primary-container hover:text-white transition-soft flex items-center gap-base rounded shadow-md whitespace-nowrap">
+            <div className="flex flex-wrap gap-2 sm:gap-md justify-center w-full sm:w-auto">
+              <Link href="/shop" className="bg-white text-primary px-4 sm:px-lg py-2.5 sm:py-3 font-label-md text-sm sm:text-label-md hover:bg-primary-container hover:text-white transition-soft flex items-center justify-center gap-base rounded shadow-md flex-1 sm:flex-initial min-w-[140px]">
                 Explore Collection
                 <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
               </Link>
-              <Link href="/shop" className="border border-white/70 text-white px-lg py-3 font-label-md text-label-md hover:bg-white/10 transition-soft rounded inline-flex items-center justify-center whitespace-nowrap">
+              <Link href="/shop" className="border border-white/70 text-white px-4 sm:px-lg py-2.5 sm:py-3 font-label-md text-sm sm:text-label-md hover:bg-white/10 transition-soft rounded inline-flex items-center justify-center flex-1 sm:flex-initial min-w-[140px]">
                 Browse Categories
               </Link>
             </div>
@@ -99,7 +97,7 @@ export default async function HomePage() {
       {/* Shop by Category - Circular Icons */}
       {categories && categories.length > 0 && (
         <section className="py-10 bg-white border-b border-gray-100">
-          <div className="max-w-container-max mx-auto px-lg">
+          <div className="max-w-container-max mx-auto px-4 md:px-lg">
             <p className="text-xs text-on-surface-variant uppercase tracking-widest mb-1">Browse Curated Collections</p>
             <h2 className="text-2xl font-bold text-on-surface mb-8">Shop by Category</h2>
             <div className="flex gap-6 sm:gap-8 overflow-x-auto pb-4 items-start">
@@ -111,7 +109,7 @@ export default async function HomePage() {
                 >
                   <div
                     style={{ borderRadius: '50%', aspectRatio: '1/1' }}
-                    className="w-22 h-22 sm:w-26 sm:h-26 md:w-28 md:h-28 rounded-full overflow-hidden shrink-0 shadow-[0_6px_16px_rgba(0,0,0,0.12)] border-2 sm:border-[3px] border-white group-hover:border-primary group-hover:shadow-[0_12px_24px_rgba(6,95,70,0.25)] group-hover:scale-105 transition-all duration-300 bg-surface-container relative flex items-center justify-center"
+                    className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden shrink-0 shadow-[0_6px_16px_rgba(0,0,0,0.12)] border-2 sm:border-[3px] border-white group-hover:border-primary group-hover:shadow-[0_12px_24px_rgba(6,95,70,0.25)] group-hover:scale-105 transition-all duration-300 bg-surface-container relative flex items-center justify-center"
                   >
                     {/* Spherical glass highlight for 3D sphere depth */}
                     <div className="absolute inset-0 rounded-full shadow-[inset_0_4px_8px_rgba(255,255,255,0.6),inset_0_-4px_8px_rgba(0,0,0,0.15)] pointer-events-none z-10"></div>
@@ -132,7 +130,7 @@ export default async function HomePage() {
               <Link href="/shop" className="flex flex-col items-center gap-2.5 shrink-0 group">
                 <div
                   style={{ borderRadius: '50%', aspectRatio: '1/1' }}
-                  className="w-22 h-22 sm:w-26 sm:h-26 md:w-28 md:h-28 rounded-full border-2 sm:border-[3px] border-gray-200 flex items-center justify-center shrink-0 group-hover:border-primary group-hover:shadow-[0_12px_24px_rgba(6,95,70,0.2)] group-hover:scale-105 transition-all duration-300 bg-white relative overflow-hidden"
+                  className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full border-2 sm:border-[3px] border-gray-200 flex items-center justify-center shrink-0 group-hover:border-primary group-hover:shadow-[0_12px_24px_rgba(6,95,70,0.2)] group-hover:scale-105 transition-all duration-300 bg-white relative overflow-hidden"
                 >
                   <div className="absolute inset-0 rounded-full shadow-[inset_0_4px_8px_rgba(255,255,255,0.8),inset_0_-4px_8px_rgba(0,0,0,0.08)] pointer-events-none z-10"></div>
                   <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors text-[26px] sm:text-[34px] z-20">arrow_outward</span>
@@ -154,17 +152,17 @@ export default async function HomePage() {
       )}
 
       {/* Newsletter Signup */}
-      <section className="py-xl bg-surface">
-        <div className="max-w-container-max mx-auto px-lg text-center">
+      <section className="py-10 md:py-xl bg-surface">
+        <div className="max-w-container-max mx-auto px-4 md:px-lg text-center">
           <div className="max-w-2xl mx-auto">
             <span className="material-symbols-outlined text-primary text-[48px] mb-md" data-weight="fill">local_offer</span>
-            <h2 className="font-display-lg text-[2rem] md:text-display-lg text-primary mb-base">Get Exclusive Book Deals & Alerts</h2>
-            <p className="font-body-lg text-body-lg text-on-surface-variant mb-lg">
+            <h2 className="font-display-lg text-[1.75rem] sm:text-[2rem] md:text-display-lg text-primary mb-base">Get Exclusive Book Deals & Alerts</h2>
+            <p className="font-body-lg text-base sm:text-body-lg text-on-surface-variant mb-lg">
               Subscribe to receive instant alerts on discounts, recruitment guides, bestselling novels, and new book restocks right in your inbox.
             </p>
             <form className="flex flex-col sm:flex-row gap-xs justify-center items-stretch sm:items-center bg-white p-2 border border-outline rounded">
-              <input className="bg-surface-container-low border-none focus:ring-0 px-md py-3 text-body-md w-full sm:w-auto flex-grow outline-none rounded" placeholder="Enter your email address..." required type="email" />
-              <button className="bg-primary text-on-primary px-lg py-3 font-label-md text-label-md btn-focus hover:bg-primary-container transition-soft whitespace-nowrap rounded font-bold cursor-pointer" type="submit">
+              <input className="bg-surface-container-low border-none focus:ring-0 px-4 sm:px-md py-3 text-body-md w-full sm:w-auto flex-grow outline-none rounded" placeholder="Enter your email address..." required type="email" />
+              <button className="bg-primary text-on-primary px-4 sm:px-lg py-3 font-label-md text-label-md btn-focus hover:bg-primary-container transition-soft whitespace-nowrap rounded font-bold cursor-pointer" type="submit">
                 Get 10% Off
               </button>
             </form>

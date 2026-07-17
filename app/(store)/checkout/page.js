@@ -238,7 +238,7 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-white text-gray-800">
       {/* LEFT PANE: Form sections */}
-      <div className="w-full lg:w-3/5 px-6 sm:px-12 lg:px-20 py-10 order-2 lg:order-1">
+      <div className="w-full lg:w-3/5 px-4 sm:px-12 lg:px-20 py-8 sm:py-10 order-2 lg:order-1">
         {/* Mobile Header / Brand */}
         <div className="mb-8">
           <Link href="/" className="text-2xl font-extrabold text-primary tracking-tight">AB Book Shop</Link>
@@ -573,7 +573,7 @@ export default function CheckoutPage() {
 
       {/* RIGHT PANE: Emerald Green Order Summary (exact match to screenshot) */}
       <div
-        className="w-full lg:w-2/5 px-6 sm:px-12 lg:px-14 py-10 text-white order-1 lg:order-2"
+        className="w-full lg:w-2/5 px-4 sm:px-12 lg:px-14 py-8 sm:py-10 text-white order-1 lg:order-2"
         style={{ background: '#3A6B48' }}
       >
         <div className="max-w-md mx-auto lg:max-w-none sticky top-10">

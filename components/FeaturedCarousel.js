@@ -14,10 +14,10 @@ export default function FeaturedCarousel({ products }) {
 
   return (
     <section className="py-8 bg-white">
-      <div className="max-w-container-max mx-auto px-lg">
+      <div className="max-w-container-max mx-auto px-4 md:px-lg">
         <p className="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-1">Curator's Choice</p>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="font-headline-md text-[1.75rem] font-bold text-on-surface">Featured Books</h2>
+        <div className="flex items-center justify-between mb-6 gap-2">
+          <h2 className="font-headline-md text-xl sm:text-[1.75rem] font-bold text-on-surface">Featured Books</h2>
           <div className="flex items-center gap-3">
             <Link className="font-label-md text-label-md text-primary flex items-center gap-1 hover:underline" href="/shop">
               View All →

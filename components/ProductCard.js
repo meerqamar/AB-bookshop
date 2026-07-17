@@ -38,7 +38,7 @@ export default function ProductCard({ product }) {
         )}
 
         <button
-          className={`absolute bottom-2 right-2 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded shadow-lg opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0 duration-300 btn-focus ${added ? 'bg-green-500 text-white scale-110' : 'bg-primary text-on-primary'}`}
+          className={`absolute bottom-2 right-2 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded shadow-lg opacity-100 translate-y-0 md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0 transition-all duration-300 btn-focus ${added ? 'bg-green-500 text-white scale-110' : 'bg-primary text-on-primary'}`}
           onClick={handleAddToCart}
           aria-label="Add to cart"
           title="Add to cart"

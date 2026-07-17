@@ -17,8 +17,11 @@ export default function Navbar() {
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState('');
   const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const searchInputRef = useRef(null);
   const loginRef = useRef(null);
+  const accountRef = useRef(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -30,9 +33,22 @@ export default function Navbar() {
   // Check auth state
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => setUser(data?.user ?? null));
+    async function loadUser(sessionUser) {
+      setUser(sessionUser ?? null);
+      if (!sessionUser) {
+        setIsAdmin(false);
+        return;
+      }
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', sessionUser.id)
+        .single();
+      setIsAdmin(profile?.role === 'admin');
+    }
+    supabase.auth.getUser().then(({ data }) => loadUser(data?.user ?? null));
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
-      setUser(session?.user ?? null);
+      loadUser(session?.user ?? null);
     });
     return () => subscription.unsubscribe();
   }, []);
@@ -45,7 +61,7 @@ export default function Navbar() {
   // Close on Escape key
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === 'Escape') { setSearchOpen(false); setLoginOpen(false); }
+      if (e.key === 'Escape') { setSearchOpen(false); setLoginOpen(false); setAccountOpen(false); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -61,6 +77,16 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handler);
   }, [loginOpen]);
 
+  // Close account dropdown on outside click
+  useEffect(() => {
+    if (!accountOpen) return;
+    const handler = (e) => {
+      if (accountRef.current && !accountRef.current.contains(e.target)) setAccountOpen(false);
+    };
+    setTimeout(() => document.addEventListener('mousedown', handler), 0);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [accountOpen]);
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -75,7 +101,7 @@ export default function Navbar() {
     setAuthLoading(true);
     setAuthError('');
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data: authData, error } = await supabase.auth.signInWithPassword({ email, password });
     setAuthLoading(false);
     if (error) {
       setAuthError(error.message);
@@ -83,6 +109,12 @@ export default function Navbar() {
       setLoginOpen(false);
       setEmail('');
       setPassword('');
+      const { data: profile } = authData?.user
+        ? await supabase.from('profiles').select('role').eq('id', authData.user.id).single()
+        : { data: null };
+      if (profile?.role === 'admin') {
+        router.push('/admin');
+      }
       router.refresh();
     }
   };
@@ -96,17 +128,16 @@ export default function Navbar() {
   return (
     <>
       <header className={`w-full sticky top-0 bg-surface border-b border-outline-variant z-50 transition-shadow duration-300 ${scrolled ? 'paper-shadow' : ''}`}>
-        <nav className="flex justify-between items-center h-20 px-lg max-w-container-max mx-auto w-full">
-          <div className="flex items-center gap-md">
-            <Link href="/" className="font-display-lg text-[2rem] md:text-[2.5rem] font-bold text-primary tracking-tight">AB Book Shop</Link>
+        <nav className="flex justify-between items-center h-16 sm:h-20 px-4 md:px-lg max-w-container-max mx-auto w-full gap-2">
+          <div className="flex items-center min-w-0">
+            <Link href="/" className="font-display-lg text-xl sm:text-2xl md:text-[2.5rem] font-bold text-primary tracking-tight truncate">AB Book Shop</Link>
           </div>
           <div className="hidden md:flex items-center gap-lg">
             <Link href="/" className="nav-link">Home</Link>
             <Link href="/shop" className="nav-link">Shop</Link>
             <Link href="/cart" className="nav-link">Cart</Link>
           </div>
-          <div className="flex items-center gap-sm">
-            {/* Search button */}
+          <div className="flex items-center gap-0.5 sm:gap-sm shrink-0">
             <button
               onClick={() => setSearchOpen(true)}
               className="p-2 text-on-surface-variant hover:text-primary transition-all flex items-center justify-center rounded-full hover:bg-surface-container"
@@ -115,22 +146,30 @@ export default function Navbar() {
               <span className="material-symbols-outlined">search</span>
             </button>
 
-            {/* Account icon — opens login modal or goes to dashboard */}
             {user ? (
-              <div className="relative group">
-                <button className="p-2 text-primary hover:bg-surface-container rounded-full flex items-center justify-center transition-all" aria-label="Account">
+              <div className="relative" ref={accountRef}>
+                <button
+                  onClick={() => setAccountOpen(v => !v)}
+                  className="p-2 text-primary hover:bg-surface-container rounded-full flex items-center justify-center transition-all"
+                  aria-label="Account"
+                  aria-expanded={accountOpen}
+                >
                   <span className="material-symbols-outlined">account_circle</span>
                 </button>
-                {/* Dropdown */}
-                <div className="absolute right-0 top-full mt-2 w-44 bg-white border border-gray-100 rounded-xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[300]">
-                  <Link href="/dashboard" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
+                <div className={`absolute right-0 top-full mt-2 w-44 bg-white border border-gray-100 rounded-xl shadow-xl py-2 transition-all duration-200 z-[300] ${accountOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+                  <Link href="/dashboard" onClick={() => setAccountOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
                     <span className="material-symbols-outlined text-[18px]">person</span> My Account
                   </Link>
-                  <Link href="/dashboard/orders" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
+                  <Link href="/dashboard" onClick={() => setAccountOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
                     <span className="material-symbols-outlined text-[18px]">receipt_long</span> My Orders
                   </Link>
+                  {isAdmin && (
+                    <Link href="/admin" onClick={() => setAccountOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-primary font-semibold hover:bg-primary/5 transition-colors">
+                      <span className="material-symbols-outlined text-[18px]">admin_panel_settings</span> Admin Portal
+                    </Link>
+                  )}
                   <div className="border-t border-gray-100 my-1" />
-                  <button onClick={handleLogout} className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                  <button onClick={() => { handleLogout(); setAccountOpen(false); }} className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors">
                     <span className="material-symbols-outlined text-[18px]">logout</span> Log out
                   </button>
                 </div>
@@ -145,13 +184,14 @@ export default function Navbar() {
               </button>
             )}
 
-            <Link href="/cart" className="relative bg-primary text-on-primary px-md py-2 font-label-md text-label-md btn-focus hover:opacity-90 transition-soft rounded flex items-center gap-2">
-              Cart
+            <Link href="/cart" className="relative bg-primary text-on-primary p-2 sm:px-md sm:py-2 font-label-md text-label-md btn-focus hover:opacity-90 transition-soft rounded flex items-center gap-2" aria-label={`Cart${cartCount > 0 ? ` (${cartCount})` : ''}`}>
+              <span className="material-symbols-outlined text-[22px] sm:hidden">shopping_bag</span>
+              <span className="hidden sm:inline">Cart</span>
               {cartCount > 0 && (
-                <span className="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full text-xs font-bold">{cartCount}</span>
+                <span className="absolute -top-1.5 -right-1.5 sm:static bg-secondary-container text-on-secondary-container min-w-[18px] h-[18px] sm:min-w-0 sm:h-auto px-1.5 sm:px-2 py-0 sm:py-0.5 rounded-full text-[10px] sm:text-xs font-bold flex items-center justify-center">{cartCount}</span>
               )}
             </Link>
-            <button className="md:hidden p-2 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center" onClick={() => setMenuOpen(true)}>
+            <button className="md:hidden p-2 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center" onClick={() => setMenuOpen(true)} aria-label="Open menu">
               <span className="material-symbols-outlined">menu</span>
             </button>
           </div>
@@ -163,7 +203,7 @@ export default function Navbar() {
         <div className="fixed inset-0 z-[200] flex items-center justify-center px-4" style={{ background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(6px)' }}>
           <div
             ref={loginRef}
-            className="bg-white w-full max-w-md rounded-2xl shadow-2xl p-8 relative"
+            className="bg-white w-full max-w-md rounded-2xl shadow-2xl p-5 sm:p-8 relative"
             style={{ animation: 'slideDown 0.25s ease-out' }}
           >
             {/* Close button */}
@@ -243,22 +283,22 @@ export default function Navbar() {
             onClick={e => e.stopPropagation()}
             style={{ animation: 'slideDown 0.2s ease-out' }}
           >
-            <form onSubmit={handleSearch} className="flex items-center gap-3 px-5 py-4">
-              <span className="material-symbols-outlined text-primary text-[24px]">search</span>
+            <form onSubmit={handleSearch} className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-3 sm:py-4">
+              <span className="material-symbols-outlined text-primary text-[24px] shrink-0">search</span>
               <input
                 ref={searchInputRef}
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Search for books, authors, categories..."
-                className="flex-1 text-lg outline-none bg-transparent text-on-surface placeholder-on-surface-variant"
+                placeholder="Search books..."
+                className="flex-1 text-base sm:text-lg outline-none bg-transparent text-on-surface placeholder-on-surface-variant min-w-0"
               />
               {searchQuery && (
-                <button type="button" onClick={() => setSearchQuery('')} className="text-on-surface-variant hover:text-primary transition-colors">
+                <button type="button" onClick={() => setSearchQuery('')} className="text-on-surface-variant hover:text-primary transition-colors shrink-0">
                   <span className="material-symbols-outlined text-[20px]">close</span>
                 </button>
               )}
-              <button type="submit" className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors whitespace-nowrap">
+              <button type="submit" className="bg-primary text-white px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors shrink-0">
                 Search
               </button>
             </form>
@@ -271,7 +311,7 @@ export default function Navbar() {
 
       {/* Mobile menu overlay */}
       <div className={`fixed inset-0 z-[100] transition-opacity duration-300 ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-        <div className="absolute inset-0 bg-scrim/50 backdrop-blur-sm" onClick={() => setMenuOpen(false)}></div>
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setMenuOpen(false)}></div>
         <div className={`absolute top-0 right-0 bottom-0 w-[280px] bg-surface shadow-2xl transition-transform duration-300 ease-out flex flex-col ${menuOpen ? 'translate-x-0' : 'translate-x-full'}`} onClick={e => e.stopPropagation()}>
           <button className="absolute top-4 right-4 p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full flex items-center justify-center" onClick={() => setMenuOpen(false)}>
             <span className="material-symbols-outlined">close</span>
@@ -284,6 +324,9 @@ export default function Navbar() {
             {user ? (
               <>
                 <Link href="/dashboard" className="hover:text-primary transition-colors" onClick={() => setMenuOpen(false)}>My Account</Link>
+                {isAdmin && (
+                  <Link href="/admin" className="text-primary font-semibold hover:text-primary/80 transition-colors" onClick={() => setMenuOpen(false)}>Admin Portal</Link>
+                )}
                 <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="text-left text-red-500 hover:text-red-700 transition-colors">Log out</button>
               </>
             ) : (

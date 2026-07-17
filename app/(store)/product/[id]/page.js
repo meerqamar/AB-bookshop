@@ -51,9 +51,9 @@ export default async function ProductPage({ params }) {
   const categoryName = typeof product.category === 'object' ? product.category?.name : product.category;
 
   return (
-    <main className="max-w-container-max mx-auto px-lg py-xl">
+    <main className="max-w-container-max mx-auto px-4 md:px-lg py-8 md:py-xl">
       {/* Breadcrumb */}
-      <nav className="flex gap-xs text-label-md font-label-md text-on-surface-variant mb-lg">
+      <nav className="flex flex-wrap gap-xs text-label-md font-label-md text-on-surface-variant mb-6 md:mb-lg">
         <Link className="hover:text-primary transition-colors" href="/">Home</Link>
         <span>/</span>
         <Link className="hover:text-primary transition-colors" href="/shop">Shop</Link>
@@ -68,7 +68,7 @@ export default async function ProductPage({ params }) {
       </nav>
 
       {/* Product Header Section */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-xl">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-xl">
         {/* Book Cover */}
         <div className="md:col-span-5 lg:col-span-4">
           <div className="sticky top-24">
@@ -91,15 +91,15 @@ export default async function ProductPage({ params }) {
         {/* Content Details */}
         <div className="md:col-span-7 lg:col-span-8 flex flex-col">
           <div className="mb-md">
-            <h1 className="font-display-lg text-[2rem] md:text-display-lg text-primary mb-xs leading-tight">{product.title}</h1>
+            <h1 className="font-display-lg text-[1.75rem] sm:text-[2rem] md:text-display-lg text-primary mb-xs leading-tight">{product.title}</h1>
             {product.author && <p className="font-headline-sm text-headline-sm text-secondary italic">by {product.author}</p>}
           </div>
 
           {/* Price & CTA Box */}
-          <div className="bg-surface-container-lowest border border-outline-variant p-md rounded-xl mb-lg grid grid-cols-1 sm:grid-cols-2 gap-md items-center">
+          <div className="bg-surface-container-lowest border border-outline-variant p-4 sm:p-md rounded-xl mb-lg grid grid-cols-1 sm:grid-cols-2 gap-md items-center">
             <div>
-              <div className="flex items-center gap-sm mb-xs">
-                <span className="font-headline-md text-headline-md text-on-surface">{money(product.price)}</span>
+              <div className="flex flex-wrap items-center gap-2 sm:gap-sm mb-xs">
+                <span className="font-headline-md text-2xl sm:text-headline-md text-on-surface">{money(product.price)}</span>
                 {product.original_price && product.original_price > product.price && (
                   <span className="text-label-md font-label-md line-through text-on-surface-variant">{money(product.original_price)}</span>
                 )}
@@ -122,11 +122,11 @@ export default async function ProductPage({ params }) {
           </div>
 
           {/* Synopsis */}
-          <div className="mb-xl">
-            <h3 className="font-headline-sm text-headline-sm mb-md flex items-center gap-sm">
+          <div className="mb-8 md:mb-xl">
+            <h3 className="font-headline-sm text-xl sm:text-headline-sm mb-md flex items-center gap-sm">
               Synopsis <span className="h-px bg-outline-variant flex-grow ml-4"></span>
             </h3>
-            <div className="font-body-lg text-body-lg space-y-md text-on-surface leading-relaxed">
+            <div className="font-body-lg text-base sm:text-body-lg space-y-md text-on-surface leading-relaxed">
               {product.description ? (
                 <p className="whitespace-pre-line">{product.description}</p>
               ) : (
@@ -136,11 +136,11 @@ export default async function ProductPage({ params }) {
           </div>
 
           {/* Specifications Grid */}
-          <div className="mb-xl">
-            <h3 className="font-headline-sm text-headline-sm mb-md flex items-center gap-sm">
+          <div className="mb-8 md:mb-xl">
+            <h3 className="font-headline-sm text-xl sm:text-headline-sm mb-md flex items-center gap-sm">
               Specifications <span className="h-px bg-outline-variant flex-grow ml-4"></span>
             </h3>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-md bg-surface-container-low p-md rounded-xl">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-md bg-surface-container-low p-4 sm:p-md rounded-xl">
               <div className="flex flex-col gap-xs">
                 <span className="text-label-md font-label-md text-on-surface-variant">Category</span>
                 <span className="text-body-md font-body-md font-bold">{categoryName || 'Uncategorized'}</span>
