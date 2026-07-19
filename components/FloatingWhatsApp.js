@@ -35,14 +35,14 @@ export default function FloatingWhatsApp({ whatsappNumber = '923289812517' }) {
         .wa-bubble { animation: bubble-in 0.35s ease-out forwards; }
       `}</style>
 
-      <div style={{ position: 'fixed', bottom: 'max(16px, env(safe-area-inset-bottom))', right: 'max(16px, env(safe-area-inset-right))', zIndex: 9999, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px' }}>
+      <div style={{ position: 'fixed', bottom: 'max(16px, env(safe-area-inset-bottom))', left: 'max(16px, env(safe-area-inset-left))', zIndex: 9999, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '10px' }}>
 
         {/* Speech bubble */}
         {showBubble && !dismissed && (
           <div className="wa-bubble" style={{
             position: 'relative',
             background: '#fff',
-            borderRadius: '16px 16px 4px 16px',
+            borderRadius: '16px 16px 16px 4px',
             padding: '12px 16px',
             boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
             fontSize: '14px',
