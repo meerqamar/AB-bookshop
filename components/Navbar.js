@@ -4,6 +4,7 @@ import { useCart } from './CartProvider';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { logoutAndRedirect } from '@/lib/auth';
 
 export default function Navbar() {
   const { cartCount } = useCart();
@@ -30,10 +31,12 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Check auth state
+  // Check auth state (generation guard avoids stale profile fetches after logout)
   useEffect(() => {
     const supabase = createClient();
+    let generation = 0;
     async function loadUser(sessionUser) {
+      const gen = ++generation;
       setUser(sessionUser ?? null);
       if (!sessionUser) {
         setIsAdmin(false);
@@ -44,10 +47,18 @@ export default function Navbar() {
         .select('role')
         .eq('id', sessionUser.id)
         .single();
+      if (gen !== generation) return;
       setIsAdmin(profile?.role === 'admin');
     }
     supabase.auth.getUser().then(({ data }) => loadUser(data?.user ?? null));
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        generation += 1;
+        setUser(null);
+        setIsAdmin(false);
+        setAccountOpen(false);
+        return;
+      }
       loadUser(session?.user ?? null);
     });
     return () => subscription.unsubscribe();
@@ -120,9 +131,11 @@ export default function Navbar() {
   };
 
   const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.refresh();
+    setUser(null);
+    setIsAdmin(false);
+    setAccountOpen(false);
+    setMenuOpen(false);
+    await logoutAndRedirect('/');
   };
 
   return (

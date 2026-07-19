@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { logoutAndRedirect } from '@/lib/auth';
 import { money, formatDate, formatDateTime } from '@/lib/utils';
 import { useToast } from '@/components/Toast';
 import { useRouter } from 'next/navigation';
@@ -30,7 +31,7 @@ export default function DashboardPage({ searchParams }) {
     async function init() {
       const supabase = createClient();
       const { data: { user: u } } = await supabase.auth.getUser();
-      if (!u) { router.push('/login'); return; }
+      if (!u) { router.replace('/login'); return; }
       setUser(u);
 
       let { data: prof } = await supabase.from('profiles').select('*').eq('id', u.id).single();
@@ -48,6 +49,19 @@ export default function DashboardPage({ searchParams }) {
     }
 
     init();
+
+    const supabase = createClient();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') {
+        setUser(null);
+        setProfile(null);
+        setOrders([]);
+        setAddresses([]);
+        setSelectedOrder(null);
+        window.location.href = '/';
+      }
+    });
+    return () => subscription.unsubscribe();
   }, [router]);
 
   useEffect(() => {
@@ -111,10 +125,12 @@ export default function DashboardPage({ searchParams }) {
   }
 
   async function handleLogout() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push('/');
-    router.refresh();
+    setUser(null);
+    setProfile(null);
+    setOrders([]);
+    setAddresses([]);
+    setSelectedOrder(null);
+    await logoutAndRedirect('/');
   }
 
   if (loading) return <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24"><div className="flex justify-center items-center py-24"><div className="w-12 h-12 border-4 border-outline-variant border-t-primary rounded-full animate-spin"></div></div></div>;

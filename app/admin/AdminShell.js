@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { logoutAndRedirect } from '@/lib/auth';
 
 export default function AdminShell({ children }) {
   const pathname = usePathname();
@@ -56,10 +57,7 @@ export default function AdminShell({ children }) {
   ];
 
   async function handleLogout() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push('/');
-    router.refresh();
+    await logoutAndRedirect('/');
   }
 
   return (
