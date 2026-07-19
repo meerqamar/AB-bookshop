@@ -98,13 +98,15 @@ export default async function ProductPage({ params }) {
             <div className="sticky top-24">
               <div className="bg-white p-3 sm:p-4 border border-outline-variant/80 rounded-2xl shadow-[0_12px_32px_rgba(4,120,87,0.08)] overflow-hidden">
                 {product.image ? (
-                  <img
-                    className="w-full h-auto aspect-[2/3] object-cover rounded-xl"
-                    alt={product.title}
-                    src={product.image}
-                  />
+                  <div className="mx-auto w-full max-w-[220px] sm:max-w-[280px] md:max-w-none flex items-center justify-center bg-[#f3f7f5] rounded-xl">
+                    <img
+                      className="w-full max-h-[42vh] sm:max-h-[48vh] md:max-h-none h-auto md:aspect-[2/3] object-contain md:object-cover rounded-xl"
+                      alt={product.title}
+                      src={product.image}
+                    />
+                  </div>
                 ) : (
-                  <div className="w-full aspect-[2/3] flex items-center justify-center bg-primary-container text-primary rounded-xl">
+                  <div className="mx-auto w-full max-w-[220px] sm:max-w-[280px] md:max-w-none aspect-[2/3] flex items-center justify-center bg-primary-container text-primary rounded-xl">
                     <span className="material-symbols-outlined text-[64px]">menu_book</span>
                   </div>
                 )}
