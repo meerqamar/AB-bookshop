@@ -1,43 +1,55 @@
 import './globals.css';
 import { CartProvider } from '@/components/CartProvider';
 import { ToastProvider } from '@/components/Toast';
-
+import {
+  SITE_NAME,
+  SITE_DESCRIPTION,
+  SITE_URL,
+  DEFAULT_OG_IMAGE,
+} from '@/lib/seo';
 
 export const metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: 'AB Book Shop — Buy Books Online with Cash on Delivery in Pakistan',
-    template: '%s | AB Book Shop',
+    default: `${SITE_NAME} — Buy Books Online with Cash on Delivery in Pakistan`,
+    template: `%s | ${SITE_NAME}`,
   },
-  description: 'AB Book Shop offers the widest range of academic, entry-test (MDCAT, CSS, PPSC), Islamic, and kids books online with Cash on Delivery across Pakistan. Fast delivery, quality selection.',
-  keywords: ['buy books online Pakistan', 'MDCAT books', 'CSS books', 'PPSC books', 'Islamic books', 'kids books', 'academic books', 'entry test preparation', 'AB Book Shop', 'books with cash on delivery'],
-  authors: [{ name: 'AB Book Shop' }],
-  creator: 'AB Book Shop',
-  publisher: 'AB Book Shop',
-  metadataBase: new URL('https://ab-bookshop.vercel.app'),
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  keywords: [
+    'buy books online Pakistan',
+    'MDCAT books',
+    'CSS books',
+    'PPSC books',
+    'Islamic books',
+    'kids books',
+    'academic books',
+    'entry test preparation',
+    'AB Book Shop',
+    'books with cash on delivery',
+    'Lahore bookstore',
+  ],
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  category: 'shopping',
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'en_PK',
-    url: 'https://ab-bookshop.vercel.app',
-    siteName: 'AB Book Shop',
-    title: 'AB Book Shop — Buy Books Online with Cash on Delivery in Pakistan',
-    description: 'Pakistan\'s trusted online bookshop. Wide range of MDCAT, CSS, PPSC, Islamic, and kids books. Cash on Delivery available.',
-    images: [
-      {
-        url: '/Heroimage.jpeg',
-        width: 1200,
-        height: 630,
-        alt: 'AB Book Shop — Books that Inspire, Knowledge that Empowers',
-      },
-    ],
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} — Buy Books Online with Cash on Delivery in Pakistan`,
+    description: SITE_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AB Book Shop — Buy Books Online Pakistan',
-    description: 'Pakistan\'s trusted online bookshop. MDCAT, CSS, PPSC, Islamic and kids books with Cash on Delivery.',
-    images: ['/Heroimage.jpeg'],
+    title: `${SITE_NAME} — Buy Books Online Pakistan`,
+    description: SITE_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE.url],
   },
   robots: {
     index: true,
@@ -50,11 +62,22 @@ export const metadata = {
       'max-snippet': -1,
     },
   },
+  formatDetection: {
+    telephone: true,
+    email: true,
+    address: true,
+  },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#047857',
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en-PK">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="bg-[#0f1f1a] text-white">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-gutter py-12 md:py-16 px-4 md:px-lg max-w-container-max mx-auto w-full">
         <div className="md:col-span-1 sm:col-span-2">
-          <h2 className="font-headline-md text-2xl md:text-headline-md text-white mb-4">AB Book Shop</h2>
+          <p className="font-headline-md text-2xl md:text-headline-md text-white mb-4">AB Book Shop</p>
           <p className="font-body-md text-body-md text-white/65 mb-5 max-w-sm leading-relaxed">
             Pakistan&apos;s trusted bookstore for novels, academic textbooks, Islamic literature, and recruitment guides. Fast Cash on Delivery nationwide.
           </p>

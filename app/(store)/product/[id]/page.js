@@ -3,6 +3,14 @@ import { notFound } from 'next/navigation';
 import AddToCartWrapper from './AddToCartWrapper';
 import { money } from '@/lib/utils';
 import Link from 'next/link';
+import JsonLd from '@/components/JsonLd';
+import {
+  absoluteUrl,
+  breadcrumbJsonLd,
+  productJsonLd,
+  DEFAULT_OG_IMAGE,
+  SITE_NAME,
+} from '@/lib/seo';
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
@@ -13,23 +21,33 @@ export async function generateMetadata({ params }) {
     .eq('id', resolvedParams.id)
     .single();
 
-  if (!product) return { title: 'Book Not Found' };
+  if (!product) return { title: 'Book Not Found', robots: { index: false, follow: false } };
+
+  const description = product.description
+    ? product.description.slice(0, 160)
+    : `Buy "${product.title}" by ${product.author || SITE_NAME} with Cash on Delivery in Pakistan.`;
+  const path = `/product/${resolvedParams.id}`;
 
   return {
     title: product.title,
-    description: product.description
-      ? product.description.slice(0, 160)
-      : `Buy "${product.title}" by ${product.author || 'AB Book Shop'} with Cash on Delivery in Pakistan.`,
+    description,
+    alternates: { canonical: path },
     openGraph: {
-      title: `${product.title} | AB Book Shop`,
-      description: `Buy "${product.title}" online with Cash on Delivery in Pakistan.`,
-      images: product.image ? [{ url: product.image, alt: product.title }] : [],
       type: 'website',
+      locale: 'en_PK',
+      url: absoluteUrl(path),
+      siteName: SITE_NAME,
+      title: `${product.title} | ${SITE_NAME}`,
+      description,
+      images: product.image
+        ? [{ url: product.image, alt: product.title }]
+        : [DEFAULT_OG_IMAGE],
     },
     twitter: {
       card: 'summary_large_image',
       title: product.title,
-      images: product.image ? [product.image] : [],
+      description,
+      images: product.image ? [product.image] : [DEFAULT_OG_IMAGE.url],
     },
   };
 }
@@ -48,10 +66,20 @@ export default async function ProductPage({ params }) {
 
   const categoryName = typeof product.category === 'object' ? product.category?.name : product.category;
 
+  const crumbs = [
+    { name: 'Home', path: '/' },
+    { name: 'Shop', path: '/shop' },
+  ];
+  if (categoryName && product.category_id) {
+    crumbs.push({ name: categoryName, path: `/shop?category=${product.category_id}` });
+  }
+  crumbs.push({ name: product.title, path: `/product/${product.id}` });
+
   return (
     <main className="min-h-screen bg-[#f3f7f5]">
+      <JsonLd data={[productJsonLd(product, categoryName), breadcrumbJsonLd(crumbs)]} />
       <div className="max-w-container-max mx-auto px-4 md:px-lg py-8 md:py-12">
-        <nav className="flex flex-wrap gap-1.5 text-sm text-on-surface-variant mb-6 md:mb-8">
+        <nav className="flex flex-wrap gap-1.5 text-sm text-on-surface-variant mb-6 md:mb-8" aria-label="Breadcrumb">
           <Link className="hover:text-primary transition-colors" href="/">Home</Link>
           <span>/</span>
           <Link className="hover:text-primary transition-colors" href="/shop">Shop</Link>
@@ -132,7 +160,7 @@ export default async function ProductPage({ params }) {
             </div>
 
             <div className="mb-8">
-              <h3 className="font-headline-sm text-xl text-on-surface mb-4">Synopsis</h3>
+              <h2 className="font-headline-sm text-xl text-on-surface mb-4">Synopsis</h2>
               <div className="bg-white border border-outline-variant/60 rounded-2xl p-5 sm:p-6 text-base text-on-surface leading-relaxed">
                 {product.description ? (
                   <p className="whitespace-pre-line">{product.description}</p>
@@ -143,7 +171,7 @@ export default async function ProductPage({ params }) {
             </div>
 
             <div>
-              <h3 className="font-headline-sm text-xl text-on-surface mb-4">Specifications</h3>
+              <h2 className="font-headline-sm text-xl text-on-surface mb-4">Specifications</h2>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 bg-white border border-outline-variant/60 p-4 sm:p-5 rounded-2xl">
                 {[
                   ['Category', categoryName || 'Uncategorized'],

@@ -2,17 +2,15 @@ import ProductCard from '@/components/ProductCard';
 import { createClient } from '@/lib/supabase/server';
 import ShopFilters from './ShopFilters';
 import ShopSort from './ShopSort';
+import { buildPageMetadata, DEFAULT_OG_IMAGE } from '@/lib/seo';
 
-export const metadata = {
+export const metadata = buildPageMetadata({
   title: 'Browse Books',
-  description: 'Browse our full collection of MDCAT, CSS, PPSC, Islamic, academic and kids books. Filter by category, sort by price, and order with Cash on Delivery across Pakistan.',
-  alternates: { canonical: '/shop' },
-  openGraph: {
-    title: 'Browse Books — AB Book Shop',
-    description: 'Explore Pakistan\'s widest selection of entry-test, academic and Islamic books online.',
-    url: 'https://ab-bookshop.vercel.app/shop',
-  },
-};
+  description:
+    'Browse our full collection of MDCAT, CSS, PPSC, Islamic, academic and kids books. Filter by category, sort by price, and order with Cash on Delivery across Pakistan.',
+  path: '/shop',
+  image: DEFAULT_OG_IMAGE,
+});
 
 export default async function ShopPage({ searchParams }) {
   const params = await searchParams;

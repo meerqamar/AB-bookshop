@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { login } from './actions'
 
 export default function AdminLoginPage() {
@@ -22,52 +23,73 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background text-text-primary px-4">
-      <div className="w-full max-w-md p-8 sm:p-10 bg-card rounded-3xl shadow-xl border border-border">
-        <div className="text-center mb-8">
-          <h1 className="font-display text-3xl font-extrabold text-text-primary mb-2">Admin Panel</h1>
-          <p className="text-text-secondary">Sign in to manage your store</p>
+    <div className="min-h-screen flex">
+      <div className="hidden lg:flex flex-col justify-between p-12 text-white w-[45%] shrink-0 bg-gradient-to-br from-[#064e3b] via-[#065f46] to-[#047857]">
+        <Link href="/" className="font-display-lg text-2xl font-bold tracking-tight">AB Book Shop</Link>
+        <div>
+          <p className="font-display-lg text-5xl font-bold leading-tight mb-4">
+            Store<br />admin<br />console.
+          </p>
+          <p className="text-white/70 text-lg leading-relaxed max-w-sm">
+            Manage products, orders, and customers from one place.
+          </p>
         </div>
+        <p className="text-white/50 text-sm">Authorized staff only</p>
+      </div>
 
-        {error && (
-          <div className="p-4 mb-6 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-r-lg text-sm font-medium">
-            {error}
-          </div>
-        )}
+      <div className="flex-1 flex items-center justify-center px-6 py-12 bg-[#f3f7f5]">
+        <div className="w-full max-w-md bg-white border border-outline-variant/60 rounded-2xl p-7 sm:p-9 shadow-sm">
+          <Link href="/" className="lg:hidden block font-display-lg text-xl font-bold text-primary mb-6">AB Book Shop</Link>
+          <p className="text-[11px] uppercase tracking-[0.2em] font-semibold text-primary mb-2">Admin access</p>
+          <h1 className="font-headline-md text-3xl text-on-surface mb-1">Sign in</h1>
+          <p className="text-on-surface-variant text-sm mb-7">Sign in to manage your store</p>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <div>
-            <label htmlFor="email" className="text-sm font-bold text-text-primary mb-2 block">Email Address</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              placeholder="admin@example.com"
-              className="w-full px-4 py-3 rounded-xl border border-border bg-background text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-            />
-          </div>
+          {error && (
+            <div className="p-4 mb-5 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-medium">
+              {error}
+            </div>
+          )}
 
-          <div>
-            <label htmlFor="password" className="text-sm font-bold text-text-primary mb-2 block">Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              placeholder="••••••••"
-              className="w-full px-4 py-3 rounded-xl border border-border bg-background text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <div>
+              <label htmlFor="email" className="text-sm font-semibold text-on-surface mb-1.5 block">Email address</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                placeholder="admin@example.com"
+                className="w-full px-4 py-3 rounded-xl border border-outline-variant bg-[#f3f7f5] text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 focus:bg-white transition-all"
+              />
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full inline-flex items-center justify-center font-bold transition-all duration-300 rounded-xl px-8 py-4 bg-primary text-white hover:bg-primary-dark shadow-md mt-4 disabled:opacity-70 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Signing in...' : 'Sign in'}
-          </button>
-        </form>
+            <div>
+              <label htmlFor="password" className="text-sm font-semibold text-on-surface mb-1.5 block">Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                placeholder="••••••••"
+                className="w-full px-4 py-3 rounded-xl border border-outline-variant bg-[#f3f7f5] text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 focus:bg-white transition-all"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full inline-flex items-center justify-center font-semibold transition-all rounded-xl px-8 py-3.5 bg-primary text-white hover:bg-primary/90 shadow-[0_8px_20px_rgba(4,120,87,0.25)] mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />Signing in…</>
+              ) : 'Sign in'}
+            </button>
+          </form>
+
+          <p className="text-center text-sm text-on-surface-variant mt-6">
+            <Link href="/" className="text-primary font-semibold hover:underline">← Back to store</Link>
+          </p>
+        </div>
       </div>
     </div>
   )

@@ -11,7 +11,7 @@ export default async function StoreShell({ children }) {
   return (
     <>
       <Navbar />
-      <main>{children}</main>
+      <div className="min-h-[50vh]">{children}</div>
       <Footer />
       <FloatingWhatsApp whatsappNumber={whatsappNumber} />
     </>

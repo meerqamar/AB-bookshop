@@ -1,33 +1,34 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import FeaturedCarousel from '@/components/FeaturedCarousel';
+import JsonLd from '@/components/JsonLd';
+import {
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  absoluteUrl,
+  organizationJsonLd,
+  websiteJsonLd,
+  DEFAULT_OG_IMAGE,
+} from '@/lib/seo';
 
 export const metadata = {
-  title: 'Home',
-  description: 'AB Book Shop — Pakistan\'s trusted online bookshop. Buy MDCAT, CSS, PPSC, Islamic, and kids books with Cash on Delivery across Pakistan.',
+  title: {
+    absolute: `${SITE_NAME} — Buy Books Online with Cash on Delivery in Pakistan`,
+  },
+  description: SITE_DESCRIPTION,
   alternates: { canonical: '/' },
   openGraph: {
-    title: 'AB Book Shop — Buy Books Online with Cash on Delivery in Pakistan',
-    description: 'Shop from a wide range of academic, entry-test, Islamic and kids books. Fast delivery, Cash on Delivery available.',
-    url: 'https://ab-bookshop.vercel.app',
-    images: [{ url: '/Heroimage.jpeg', width: 1200, height: 630, alt: 'AB Book Shop' }],
+    title: `${SITE_NAME} — Buy Books Online with Cash on Delivery in Pakistan`,
+    description: SITE_DESCRIPTION,
+    url: absoluteUrl('/'),
+    images: [DEFAULT_OG_IMAGE],
   },
-};
-
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BookStore',
-  name: 'AB Book Shop',
-  description: 'Pakistan\'s trusted online bookshop offering academic, entry-test, Islamic, and kids books with Cash on Delivery.',
-  url: 'https://ab-bookshop.vercel.app',
-  logo: 'https://ab-bookshop.vercel.app/Heroimage.jpeg',
-  image: 'https://ab-bookshop.vercel.app/Heroimage.jpeg',
-  priceRange: '$$',
-  paymentAccepted: 'Cash on Delivery',
-  currenciesAccepted: 'PKR',
-  areaServed: 'Pakistan',
-  address: { '@type': 'PostalAddress', addressCountry: 'PK' },
-  sameAs: [],
+  twitter: {
+    card: 'summary_large_image',
+    title: `${SITE_NAME} — Buy Books Online Pakistan`,
+    description: SITE_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE.url],
+  },
 };
 
 export default async function HomePage() {
@@ -58,15 +59,17 @@ export default async function HomePage() {
 
   return (
     <main>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
+      <h1 className="sr-only">AB Book Shop — Buy Books Online with Cash on Delivery in Pakistan</h1>
 
       {/* Hero */}
-      <section className="w-full bg-white md:h-[calc(100dvh-5rem)] md:min-h-[480px] md:max-h-[900px] md:overflow-hidden">
+      <section className="w-full bg-white md:h-[calc(100dvh-5rem)] md:min-h-[480px] md:max-h-[900px] md:overflow-hidden" aria-label="AB Book Shop hero">
         <img
           src="/Heroimage.jpeg"
           alt="AB Book Shop - Books that Inspire, Knowledge that Empowers"
           className="w-full h-auto block md:h-full md:object-cover md:object-center animate-fade-in"
           loading="eager"
+          fetchPriority="high"
         />
       </section>
 
