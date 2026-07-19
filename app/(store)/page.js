@@ -44,6 +44,7 @@ export default async function HomePage() {
     .from('products')
     .select('*, category:categories(name)')
     .eq('is_featured', true)
+    .or('in_stock.eq.true,in_stock.is.null')
     .order('created_at', { ascending: false })
     .limit(8);
 
@@ -52,6 +53,7 @@ export default async function HomePage() {
     const { data } = await supabase
       .from('products')
       .select('*, category:categories(name)')
+      .or('in_stock.eq.true,in_stock.is.null')
       .order('created_at', { ascending: false })
       .limit(8);
     products = data;

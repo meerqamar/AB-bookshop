@@ -1,11 +1,12 @@
 'use client';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useToast } from '@/components/Toast';
+import { safeRedirectPath } from '@/lib/utils';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function SignupPage() {
+function SignupForm() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,6 +14,12 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectParam = searchParams.get('redirect') || searchParams.get('next');
+  const afterSignupPath = safeRedirectPath(redirectParam, '/dashboard');
+  const loginHref = redirectParam
+    ? `/login?redirect=${encodeURIComponent(safeRedirectPath(redirectParam, '/checkout'))}`
+    : '/login';
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -37,7 +44,7 @@ export default function SignupPage() {
     }
     setLoading(false);
     addToast('Account created! Welcome to AB Book Shop 🎉', 'success');
-    router.push('/dashboard');
+    router.push(afterSignupPath);
     router.refresh();
   }
 
@@ -65,10 +72,13 @@ export default function SignupPage() {
           <Link href="/" className="lg:hidden block font-display-lg text-xl font-bold text-primary mb-6">AB Book Shop</Link>
 
           <h1 className="font-headline-md text-3xl text-on-surface mb-1">Create account</h1>
-          <p className="text-on-surface-variant text-sm mb-8">Join AB Book Shop — it&apos;s free</p>
+          <p className="text-on-surface-variant text-sm mb-8">
+            {redirectParam === '/checkout'
+              ? 'Create an account to place your order — your cart is saved.'
+              : 'Join AB Book Shop — it\'s free'}
+          </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            {/* Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Name</label>
               <input
@@ -81,7 +91,6 @@ export default function SignupPage() {
               />
             </div>
 
-            {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Email address</label>
               <input
@@ -94,7 +103,6 @@ export default function SignupPage() {
               />
             </div>
 
-            {/* Password */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
               <div className="relative">
@@ -138,7 +146,7 @@ export default function SignupPage() {
 
           <p className="text-center text-sm text-gray-500 mt-6">
             Already have an account?{' '}
-            <Link href="/login" className="text-primary font-semibold hover:underline">Log in</Link>
+            <Link href={loginHref} className="text-primary font-semibold hover:underline">Log in</Link>
           </p>
 
           <p className="text-center text-xs text-gray-400 mt-4">
@@ -149,5 +157,17 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-[50vh] flex justify-center items-center">
+        <div className="w-12 h-12 border-4 border-outline-variant border-t-primary rounded-full animate-spin" />
+      </div>
+    }>
+      <SignupForm />
+    </Suspense>
   );
 }

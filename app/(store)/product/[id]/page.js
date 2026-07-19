@@ -172,11 +172,10 @@ export default async function ProductPage({ params }) {
 
             <div>
               <h2 className="font-headline-sm text-xl text-on-surface mb-4">Specifications</h2>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 bg-white border border-outline-variant/60 p-4 sm:p-5 rounded-2xl">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-white border border-outline-variant/60 p-4 sm:p-5 rounded-2xl">
                 {[
                   ['Category', categoryName || 'Uncategorized'],
                   ['Language', 'English / Urdu'],
-                  ['Stock ID', `#${String(product.id).substring(0, 8)}`],
                   ['Format', product.format || 'Standard'],
                 ].map(([label, value]) => (
                   <div key={label} className="flex flex-col gap-1 p-2">

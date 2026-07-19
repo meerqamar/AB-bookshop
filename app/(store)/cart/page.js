@@ -16,6 +16,7 @@ export default function CartPage() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [showOrderNote, setShowOrderNote] = useState(false);
   const [orderNote, setOrderNote] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -32,6 +33,15 @@ export default function CartPage() {
     }
     fetchProducts();
   }, [cartItems]);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => setIsLoggedIn(!!data?.user));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      setIsLoggedIn(!!session?.user);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   if (loading) {
     return (
@@ -78,6 +88,11 @@ export default function CartPage() {
       return;
     }
     if (orderNote.trim()) sessionStorage.setItem('ab_order_note', orderNote.trim());
+    // Cart stays in the browser after logout; placing an order still needs an account
+    if (!isLoggedIn) {
+      router.push('/login?redirect=/checkout');
+      return;
+    }
     router.push('/checkout');
   };
 
@@ -210,9 +225,14 @@ export default function CartPage() {
                   : 'bg-surface-container text-on-surface-variant cursor-not-allowed'
               }`}
             >
-              Proceed to checkout
+              {isLoggedIn === false ? 'Sign in to checkout' : 'Proceed to checkout'}
               <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
             </button>
+            {isLoggedIn === false && (
+              <p className="mt-2 text-center text-xs text-on-surface-variant">
+                Your cart is saved on this device. Sign in to place your COD order.
+              </p>
+            )}
 
             <Link href="/shop" className="mt-4 block text-center text-sm font-semibold text-primary hover:underline">
               Continue shopping

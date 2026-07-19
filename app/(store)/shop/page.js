@@ -27,7 +27,8 @@ export default async function ShopPage({ searchParams }) {
 
   let query = supabase
     .from('products')
-    .select('*, category:categories(name)');
+    .select('*, category:categories(name)')
+    .or('in_stock.eq.true,in_stock.is.null');
 
   if (q) query = query.ilike('title', `%${q}%`);
   if (categoryId > 0) query = query.eq('category_id', categoryId);

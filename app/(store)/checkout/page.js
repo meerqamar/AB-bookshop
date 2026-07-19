@@ -47,23 +47,25 @@ export default function CheckoutPage() {
     async function init() {
       const supabase = createClient();
       const { data: { user: u } } = await supabase.auth.getUser();
-      if (u) {
-        setUser(u);
-        setEmailOrPhone(u.email || '');
-        // Fetch saved addresses
-        const { data: addrs } = await supabase
-          .from('addresses')
-          .select('*')
-          .eq('user_id', u.id)
-          .order('id', { ascending: false });
-        setAddresses(addrs || []);
-        if (addrs && addrs.length > 0) {
-          const latest = addrs[0];
-          setSelectedAddr(latest.id.toString());
-          setAddress(latest.full_address || '');
-          setCity(latest.city || '');
-          setPhone(latest.phone || '');
-        }
+      if (!u) {
+        router.replace('/login?redirect=/checkout');
+        return;
+      }
+      setUser(u);
+      setEmailOrPhone(u.email || '');
+      // Fetch saved addresses
+      const { data: addrs } = await supabase
+        .from('addresses')
+        .select('*')
+        .eq('user_id', u.id)
+        .order('id', { ascending: false });
+      setAddresses(addrs || []);
+      if (addrs && addrs.length > 0) {
+        const latest = addrs[0];
+        setSelectedAddr(latest.id.toString());
+        setAddress(latest.full_address || '');
+        setCity(latest.city || '');
+        setPhone(latest.phone || '');
       }
 
       // Fetch cart products
@@ -78,7 +80,7 @@ export default function CheckoutPage() {
       setLoading(false);
     }
     init();
-  }, [cartItems]);
+  }, [cartItems, router]);
 
   useEffect(() => {
     if (!loading && cartCount === 0) {

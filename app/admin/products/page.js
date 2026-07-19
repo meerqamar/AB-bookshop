@@ -113,11 +113,53 @@ export default function AdminProductsPage() {
   }
 
   async function deleteProduct(id) {
-    if (!confirm('Delete this product?')) return;
+    if (!confirm('Remove this product from the store?\n\nIf it appears in past orders, it will be archived (hidden from the shop) so order history stays intact.')) return;
     const supabase = createClient();
+
+    // Products linked to orders cannot be hard-deleted (FK on order_items)
+    const { count, error: countErr } = await supabase
+      .from('order_items')
+      .select('id', { count: 'exact', head: true })
+      .eq('product_id', id);
+
+    if (countErr) {
+      addToast('Delete failed: ' + countErr.message, 'error');
+      return;
+    }
+
+    if ((count || 0) > 0) {
+      const { error } = await supabase
+        .from('products')
+        .update({ in_stock: false, is_featured: false })
+        .eq('id', id);
+      if (error) addToast('Archive failed: ' + error.message, 'error');
+      else {
+        addToast('Product is in past orders — archived and hidden from the shop.');
+        loadData();
+      }
+      return;
+    }
+
     const { error } = await supabase.from('products').delete().eq('id', id);
-    if (error) addToast('Delete failed: ' + error.message, 'error');
-    else { addToast('Product deleted'); loadData(); }
+    if (error) {
+      // Fallback if count missed a race / other FK
+      if (error.message?.includes('order_items_product_id_fkey') || error.code === '23503') {
+        const { error: archiveErr } = await supabase
+          .from('products')
+          .update({ in_stock: false, is_featured: false })
+          .eq('id', id);
+        if (archiveErr) addToast('Delete failed: ' + error.message, 'error');
+        else {
+          addToast('Product is in past orders — archived and hidden from the shop.');
+          loadData();
+        }
+      } else {
+        addToast('Delete failed: ' + error.message, 'error');
+      }
+    } else {
+      addToast('Product deleted');
+      loadData();
+    }
   }
 
   if (loading) return <div className="flex justify-center items-center py-24 min-h-[50vh]"><div className="w-12 h-12 border-4 border-outline-variant border-t-primary rounded-full animate-spin"></div></div>;
@@ -190,9 +232,14 @@ export default function AdminProductsPage() {
               <thead><tr><th className="px-6 py-4 border-b border-outline-variant bg-[#f3f7f5] font-bold text-on-surface text-sm uppercase tracking-wider"></th><th className="px-6 py-4 border-b border-outline-variant bg-[#f3f7f5] font-bold text-on-surface text-sm uppercase tracking-wider">Title</th><th className="px-6 py-4 border-b border-outline-variant bg-[#f3f7f5] font-bold text-on-surface text-sm uppercase tracking-wider">Category</th><th className="px-6 py-4 border-b border-outline-variant bg-[#f3f7f5] font-bold text-on-surface text-sm uppercase tracking-wider">Price</th><th className="px-6 py-4 border-b border-outline-variant bg-[#f3f7f5] font-bold text-on-surface text-sm uppercase tracking-wider">Featured</th><th className="px-6 py-4 border-b border-outline-variant bg-[#f3f7f5] font-bold text-on-surface text-sm uppercase tracking-wider"></th></tr></thead>
               <tbody>
                 {products.map(p => (
-                  <tr key={p.id} className="hover:bg-[#f3f7f5]/50 transition-colors border-b border-outline-variant last:border-0">
+                  <tr key={p.id} className={`hover:bg-[#f3f7f5]/50 transition-colors border-b border-outline-variant last:border-0 ${p.in_stock === false ? 'opacity-70' : ''}`}>
                     <td className="px-6 py-4">{p.image && <img src={p.image} className="w-12 h-16 object-cover rounded-md bg-primary-light/10" alt="" />}</td>
-                    <td className="px-6 py-4"><strong className="text-on-surface">{p.title}</strong></td>
+                    <td className="px-6 py-4">
+                      <strong className="text-on-surface">{p.title}</strong>
+                      {p.in_stock === false && (
+                        <span className="ml-2 inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-amber-100 text-amber-800">Archived</span>
+                      )}
+                    </td>
                     <td className="px-6 py-4 text-on-surface-variant text-sm">{p.category?.name || '—'}</td>
                     <td className="px-6 py-4">
                       <div className="font-bold text-on-surface">{money(p.price)}</div>
@@ -210,7 +257,21 @@ export default function AdminProductsPage() {
                     <td className="px-6 py-4">
                       <div className="flex gap-2">
                         <button className="inline-flex items-center justify-center font-bold transition-all duration-300 rounded-lg px-3 py-1.5 text-xs bg-transparent border-2 border-primary text-primary hover:bg-primary/5" onClick={() => editProduct(p)}>Edit</button>
-                        <button className="inline-flex items-center justify-center font-bold transition-all duration-300 rounded-lg px-3 py-1.5 text-xs bg-transparent border-2 border-red-500 text-red-500 hover:bg-red-50" onClick={() => deleteProduct(p.id)}>Delete</button>
+                        {p.in_stock === false ? (
+                          <button
+                            className="inline-flex items-center justify-center font-bold transition-all duration-300 rounded-lg px-3 py-1.5 text-xs bg-transparent border-2 border-amber-600 text-amber-700 hover:bg-amber-50"
+                            onClick={async () => {
+                              const supabase = createClient();
+                              const { error } = await supabase.from('products').update({ in_stock: true }).eq('id', p.id);
+                              if (error) addToast('Restore failed: ' + error.message, 'error');
+                              else { addToast('Product restored to shop'); loadData(); }
+                            }}
+                          >
+                            Restore
+                          </button>
+                        ) : (
+                          <button className="inline-flex items-center justify-center font-bold transition-all duration-300 rounded-lg px-3 py-1.5 text-xs bg-transparent border-2 border-red-500 text-red-500 hover:bg-red-50" onClick={() => deleteProduct(p.id)}>Delete</button>
+                        )}
                       </div>
                     </td>
                   </tr>

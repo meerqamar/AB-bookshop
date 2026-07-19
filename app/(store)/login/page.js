@@ -1,11 +1,12 @@
 'use client';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useToast } from '@/components/Toast';
+import { safeRedirectPath } from '@/lib/utils';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function LoginPage() {
+function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
@@ -16,6 +17,12 @@ export default function LoginPage() {
   const [resendDone, setResendDone] = useState(false);
   const { addToast } = useToast();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectParam = searchParams.get('redirect') || searchParams.get('next');
+  const afterLoginPath = safeRedirectPath(redirectParam, '/dashboard');
+  const signupHref = redirectParam
+    ? `/signup?redirect=${encodeURIComponent(safeRedirectPath(redirectParam, '/checkout'))}`
+    : '/signup';
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -40,7 +47,7 @@ export default function LoginPage() {
       const { data: profile } = user
         ? await supabase.from('profiles').select('role').eq('id', user.id).single()
         : { data: null };
-      router.push(profile?.role === 'admin' ? '/admin' : '/dashboard');
+      router.push(profile?.role === 'admin' ? '/admin' : afterLoginPath);
       router.refresh();
     }
   }
@@ -82,10 +89,13 @@ export default function LoginPage() {
           <Link href="/" className="lg:hidden block font-display-lg text-xl font-bold text-primary mb-6">AB Book Shop</Link>
 
           <h1 className="font-headline-md text-3xl text-on-surface mb-1">Log in</h1>
-          <p className="text-on-surface-variant text-sm mb-8">Welcome back — we missed you!</p>
+          <p className="text-on-surface-variant text-sm mb-8">
+            {redirectParam === '/checkout'
+              ? 'Sign in to complete your order — your cart is waiting.'
+              : 'Welcome back — we missed you!'}
+          </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Email address</label>
               <input
@@ -98,7 +108,6 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* Password */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="block text-sm font-medium text-gray-700">Password</label>
@@ -134,7 +143,6 @@ export default function LoginPage() {
               ) : 'Log in'}
             </button>
 
-            {/* Error message */}
             {errorMsg && (
               <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700">
                 <p className="font-medium mb-1">⚠️ {errorMsg}</p>
@@ -172,10 +180,22 @@ export default function LoginPage() {
 
           <p className="text-center text-sm text-on-surface-variant">
             New to AB Book Shop?{' '}
-            <Link href="/signup" className="text-primary font-semibold hover:underline">Create an account</Link>
+            <Link href={signupHref} className="text-primary font-semibold hover:underline">Create an account</Link>
           </p>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-[50vh] flex justify-center items-center">
+        <div className="w-12 h-12 border-4 border-outline-variant border-t-primary rounded-full animate-spin" />
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }
