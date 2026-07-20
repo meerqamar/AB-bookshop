@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useCart } from '@/components/CartProvider';
 import { useToast } from '@/components/Toast';
 import { createClient } from '@/lib/supabase/client';
-import { money, codFee, orderTotalWithCod } from '@/lib/utils';
+import { money, codFee } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -111,15 +111,50 @@ export default function CheckoutPage() {
   const shippingCost = codFee();
   const finalTotal = Math.max(0, subtotal + shippingCost - discountApplied);
 
-  const handleApplyDiscount = (e) => {
-    e.preventDefault();
-    if (discountCode.trim().toUpperCase() === 'WELCOME10') {
-      const disc = Math.round(subtotal * 0.1);
-      setDiscountApplied(disc);
-      addToast(`10% discount applied (-${money(disc)})!`, 'success');
-    } else {
-      addToast('Invalid discount code. Try WELCOME10', 'error');
+  async function userHasPriorOrders(supabase, userId) {
+    const { count, error } = await supabase
+      .from('orders')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', userId)
+      .neq('status', 'Cancelled');
+    if (error) {
+      console.error('Order history check failed:', error);
+      return true; // fail closed — don't allow discount if we can't verify
     }
+    return (count || 0) > 0;
+  }
+
+  const handleApplyDiscount = async (e) => {
+    e.preventDefault();
+    const code = discountCode.trim().toUpperCase();
+    if (code !== 'WELCOME10') {
+      setDiscountApplied(0);
+      addToast('Invalid discount code. Try WELCOME10', 'error');
+      return;
+    }
+
+    if (!user?.id) {
+      setDiscountApplied(0);
+      addToast('Please sign in to use WELCOME10 on your first order.', 'error');
+      return;
+    }
+
+    if (subtotal <= 0) {
+      addToast('Add items to your cart first.', 'error');
+      return;
+    }
+
+    const supabase = createClient();
+    const usedBefore = await userHasPriorOrders(supabase, user.id);
+    if (usedBefore) {
+      setDiscountApplied(0);
+      addToast('WELCOME10 is for your first order only — you have already placed an order.', 'error');
+      return;
+    }
+
+    const disc = Math.round(subtotal * 0.1);
+    setDiscountApplied(disc);
+    addToast(`10% first-order discount applied (-${money(disc)})!`, 'success');
   };
 
   async function handlePlaceOrder(e) {
@@ -136,6 +171,20 @@ export default function CheckoutPage() {
         setPlacing(false);
         return;
       }
+
+      // Re-check first-order discount at submit so it can’t be reused
+      let appliedDiscount = discountApplied;
+      if (appliedDiscount > 0) {
+        const code = discountCode.trim().toUpperCase();
+        if (code !== 'WELCOME10' || await userHasPriorOrders(supabase, userId)) {
+          appliedDiscount = 0;
+          setDiscountApplied(0);
+          addToast('WELCOME10 is only valid once, on your first order.', 'error');
+          setPlacing(false);
+          return;
+        }
+      }
+      const orderTotal = Math.max(0, subtotal + shippingCost - appliedDiscount);
 
       // Self-heal profile: Ensure this user exists inside profiles table to prevent foreign key violation (fk_user_profile)
       await supabase
@@ -192,7 +241,7 @@ export default function CheckoutPage() {
         .insert({
           user_id: userId,
           address_id: addressId,
-          total_price: finalTotal,
+          total_price: orderTotal,
           status: 'Pending'
         })
         .select();

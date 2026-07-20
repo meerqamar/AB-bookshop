@@ -166,7 +166,7 @@ export default async function HomePage() {
               </button>
             </form>
             <p className="text-white/55 text-xs sm:text-sm mt-4">
-              First order tip: use code <span className="text-white font-semibold tracking-wide">WELCOME10</span> for 10% off.
+              First order only: use code <span className="text-white font-semibold tracking-wide">WELCOME10</span> for 10% off.
             </p>
           </div>
         </div>
